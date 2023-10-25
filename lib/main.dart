@@ -1,4 +1,3 @@
-import 'package:alive_service_app/features/details/screens/user_detail_page.dart';
 import 'package:alive_service_app/features/drawer/screens/main_page.dart';
 import 'package:alive_service_app/router.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,7 +18,7 @@ class AliveApp extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Alive_App',
-      home: const UserDetailPage(),
+      home: const MainPage(),
       onGenerateRoute: (settings)=>generateRoute(settings),
     );
   }

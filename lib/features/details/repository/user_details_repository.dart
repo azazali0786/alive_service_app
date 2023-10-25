@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -16,7 +15,6 @@ import 'package:alive_service_app/features/details/screens/timing_page.dart';
 import 'package:alive_service_app/models/location.dart';
 import 'package:alive_service_app/models/user_detail_model.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:uuid/uuid.dart';
 
 final userDetailsRepositoryProvider = Provider((ref) => UserDetailsRepository(
     firebaseStorage: FirebaseStorage.instance,
@@ -56,9 +54,6 @@ class UserDetailsRepository {
           'Location permissions are permanently denied, we cannot request permissions.');
     }
     position = await Geolocator.getCurrentPosition();
-    // List<Placemark> placemark =
-    //     await placemarkFromCoordinates(position.latitude, position.longitude);
-    // return placemark[0].postalCode!;
     return position;
   }
 
@@ -99,24 +94,24 @@ class UserDetailsRepository {
     required String discription,
   }) async {
     try {
-      var imageId = const Uuid().v1();
       List<String> imageUrlList = [];
       String userId = auth.currentUser!.uid;
       UploadTask uploadTask = firebaseStorage
           .ref()
-          .child('userDetail/$userId/mainImage/$imageId')
+          .child('userDetails/$userId/mainImage/main$userId')
           .putFile(mainImage);
       TaskSnapshot snap = await uploadTask;
       String imageUrl = await snap.ref.getDownloadURL();
-
+      int count = 1;
       for (XFile image in moreImage) {
         UploadTask uploadTask = firebaseStorage
             .ref()
-            .child('userDetail/$userId/moreImage/$imageId')
+            .child('userDetails/$userId/moreImage/more$userId$count')
             .putFile(File(image.path));
         TaskSnapshot snap = await uploadTask;
         String imagesUrl = await snap.ref.getDownloadURL();
         imageUrlList.add(imagesUrl);
+        count++;
       }
 
       String timeIn =
@@ -133,7 +128,6 @@ class UserDetailsRepository {
           latitude: position.latitude,
           logitude: position.longitude,
           discription: discription);
-
       await firestore
           .collection('user')
           .doc(auth.currentUser!.uid)

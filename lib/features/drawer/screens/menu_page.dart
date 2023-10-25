@@ -36,7 +36,7 @@ class MenuPage extends StatelessWidget {
                   const SizedBox(height: 12),
                   ElevatedButton.icon(
                     onPressed: () {
-                      // Navigator.pushNamed(context, UserDetailPage.routeName);
+                      Navigator.pushNamed(context, UserDetailPage.routeName);
                     },
                     icon: const Icon(Icons.settings),
                     label: const Text('Add your Work'),
