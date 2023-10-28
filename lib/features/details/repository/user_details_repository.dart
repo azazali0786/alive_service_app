@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -98,7 +97,7 @@ class UserDetailsRepository {
       String userId = auth.currentUser!.uid;
       UploadTask uploadTask = firebaseStorage
           .ref()
-          .child('userDetails/$userId/mainImage/main$userId')
+          .child('userDetails/$workType/$userId/mainImage/main$userId')
           .putFile(mainImage);
       TaskSnapshot snap = await uploadTask;
       String imageUrl = await snap.ref.getDownloadURL();
@@ -106,7 +105,7 @@ class UserDetailsRepository {
       for (XFile image in moreImage) {
         UploadTask uploadTask = firebaseStorage
             .ref()
-            .child('userDetails/$userId/moreImage/more$userId$count')
+            .child('userDetails/$workType/$userId/moreImage/more$userId$count')
             .putFile(File(image.path));
         TaskSnapshot snap = await uploadTask;
         String imagesUrl = await snap.ref.getDownloadURL();
@@ -129,11 +128,13 @@ class UserDetailsRepository {
           logitude: position.longitude,
           discription: discription);
       await firestore
-          .collection('user')
+          .collection('userDetails')
+          .doc(workType)
+          .collection('Users')
           .doc(auth.currentUser!.uid)
           .set(userDetail.toMap());
     } catch (e) {
-      showSnackBar(context: context, content: '$e Azaz');
+      showSnackBar(context: context, content: e.toString());
     }
   }
 }

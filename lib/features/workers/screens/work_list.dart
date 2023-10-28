@@ -115,22 +115,24 @@ class Works extends StatelessWidget {
           itemBuilder: (BuildContext ctx, index) {
             return InkWell(
               onTap: () {
-                Navigator.pushNamed(context, WorkerList.routeName);
+                Navigator.pushNamed(context, WorkerList.routeName ,arguments: workNameList[index]);
               },
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(
                         image: NetworkImage(imgList[index]),
-                        fit: BoxFit.cover)
-                        ),
+                        fit: BoxFit.cover)),
 
-                      // Ink.image(image: image) <- we will use this letter.
+                // Ink.image(image: image) <- we will use this letter.
                 child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Text(
-                      "Works$index",
-                      style: const TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold),
+                      workNameList[index],
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
                     )),
               ),
             );
@@ -139,6 +141,7 @@ class Works extends StatelessWidget {
   }
 }
 
+final List<String> workNameList = ['Plumber','Electrician','Fridge Mistry','AC Mistry','Carpentor','Parler Girl'];
 final List<String> imgList = [
   'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
   'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',

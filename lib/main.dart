@@ -1,4 +1,5 @@
 import 'package:alive_service_app/features/drawer/screens/main_page.dart';
+import 'package:alive_service_app/features/workers/screens/worker_profile_screen.dart';
 import 'package:alive_service_app/router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

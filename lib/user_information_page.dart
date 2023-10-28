@@ -1,5 +1,5 @@
-import 'package:alive_service_app/features/history/screens/history_screen.dart';
-import 'package:alive_service_app/features/works/screens/work_list.dart';
+import 'package:alive_service_app/features/callHistory/screens/callHistory_screen.dart';
+import 'package:alive_service_app/features/workers/screens/work_list.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 class UserInformationPage extends StatefulWidget {
