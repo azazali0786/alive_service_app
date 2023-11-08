@@ -1,12 +1,10 @@
 import 'package:alive_service_app/features/workers/controller/workerController.dart';
 import 'package:alive_service_app/features/workers/screens/worker_profile_screen.dart';
-import 'package:alive_service_app/models/user_detail_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_star_rating_nsafe/smooth_star_rating.dart';
-
-import 'package:alive_service_app/features/workers/screens/work_list.dart';
+import 'package:intl/intl.dart';
 
 class WorkerList extends ConsumerStatefulWidget {
   final String workType;
@@ -22,17 +20,21 @@ class WorkerList extends ConsumerStatefulWidget {
 
 class WorkerListState extends ConsumerState<WorkerList> {
   ScrollController scrollController = ScrollController();
-
-  // Stream<List<UserDetail>>? workers;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   workers = ref
-  //       .read(workerControllerProvidere)
-  //       .workerRepository
-  //       .getWorkerData(widget.workType);
-  //   print('obl');
-  // }
+  void getCall(Map<String, dynamic> worker, String workerId) {
+    var date = DateFormat.yMMMMd('en_US').format(DateTime.now());
+    var timeIn = DateFormat.jm().format(DateTime.now());
+    ref
+        .read(workerControllerProvidere)
+        .workerRepository
+        .call(worker['phoneNumber']);
+    ref.read(workerControllerProvidere).workerRepository.setCallHistory(
+        context: context,
+        workerId: workerId,
+        shopeName: worker['shopeName'],
+        workType: worker['workType'],
+        timeIn: timeIn,
+        date: date);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +125,9 @@ class WorkerListState extends ConsumerState<WorkerList> {
                     padding: const EdgeInsets.only(bottom: 10),
                     child: InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, WorkerProfileScreen.routeName,arguments: worker);
+                        Navigator.pushNamed(
+                            context, WorkerProfileScreen.routeName,
+                            arguments: worker);
                       },
                       child: Row(
                         children: [
@@ -189,7 +193,10 @@ class WorkerListState extends ConsumerState<WorkerList> {
                             ),
                           ),
                           IconButton(
-                              onPressed: () {}, icon: const Icon(Icons.phone)),
+                              onPressed: () {
+                                getCall(worker, snapshot.data!.docs[index].id);
+                              },
+                              icon: const Icon(Icons.phone)),
                         ],
                       ),
                     ),

@@ -1,8 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:alive_service_app/models/user_detail_model.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:alive_service_app/features/workers/repository/workerRepository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final workerControllerProvidere = Provider((ref) {
   final workerRepository = ref.watch(workerRepositoryProvider);
@@ -15,7 +13,11 @@ class WorkerController {
     required this.workerRepository,
   });
 
-  Stream<List<UserDetail>> getWorkerData(String workType) {
-    return workerRepository.getWorkerData(workType);
+  // Future<Map<String,dynamic>> getWorkerData(String workType, String workerId) {
+  //   return workerRepository.getWorkerData(workType, workerId);
+  // }
+
+  Stream<QuerySnapshot> getQuery() {
+    return workerRepository.getQuery();
   }
 }

@@ -8,17 +8,19 @@ class UserDetail {
   final double latitude;
   final double logitude;
   final String discription;
-  UserDetail({
-    required this.mainImage,
-    required this.moreImage,
-    required this.shopeName,
-    required this.workType,
-    required this.timeIn,
-    required this.timeOut,
-    required this.latitude,
-    required this.logitude,
-    required this.discription
-  });
+  final String phoneNumber;
+  UserDetail(
+      {required this.mainImage,
+      required this.moreImage,
+      required this.shopeName,
+      required this.workType,
+      required this.timeIn,
+      required this.timeOut,
+      required this.latitude,
+      required this.logitude,
+      required this.discription,
+      required this.phoneNumber
+      });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -30,7 +32,8 @@ class UserDetail {
       'timeOut': timeOut,
       'latitude': latitude,
       'logitude': logitude,
-      'discription':discription,
+      'discription': discription,
+      'phoneNumber': phoneNumber
     };
   }
 
@@ -44,7 +47,8 @@ class UserDetail {
       timeOut: map['timeOut'] as String,
       latitude: map['latitude'] as double,
       logitude: map['logitude'] as double,
-      discription:map['discription'] as String,
+      discription: map['discription'] as String,
+      phoneNumber: map['phoneNumber'] as String
     );
   }
 

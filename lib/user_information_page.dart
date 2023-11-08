@@ -1,4 +1,4 @@
-import 'package:alive_service_app/features/callHistory/screens/callHistory_screen.dart';
+import 'package:alive_service_app/features/workers/screens/callHistory_list.dart';
 import 'package:alive_service_app/features/workers/screens/work_list.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +37,7 @@ class _UserInformationPageState extends State<UserInformationPage> {
           children: <Widget>[
             const WorkList(),
             Container(color: Colors.red,),
-            const HistoryPage()
+            const CallhistoryList()
           ],
         ),
       ),

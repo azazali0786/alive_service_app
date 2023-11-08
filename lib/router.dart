@@ -23,6 +23,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       final worker = settings.arguments as Map<String,dynamic>;
       return MaterialPageRoute(
           builder: (context) => WorkerProfileScreen(
+                profileType: "workerProfile",
                 worker: worker,
               ));          
 

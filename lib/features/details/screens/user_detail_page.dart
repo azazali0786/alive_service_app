@@ -20,6 +20,7 @@ class UserDetailPage extends ConsumerStatefulWidget {
 class _UserDetailPageState extends ConsumerState<UserDetailPage> {
   final TextEditingController shopeNameController = TextEditingController();
   final TextEditingController discriptionController = TextEditingController();
+  
   File? mainImage;
   List<XFile> imageFileList = [];
   Position? position;

@@ -95,6 +95,7 @@ class UserDetailsRepository {
     try {
       List<String> imageUrlList = [];
       String userId = auth.currentUser!.uid;
+      var phoneNumber = auth.currentUser!.phoneNumber;
       UploadTask uploadTask = firebaseStorage
           .ref()
           .child('userDetails/$workType/$userId/mainImage/main$userId')
@@ -126,7 +127,9 @@ class UserDetailsRepository {
           timeOut: timeOut,
           latitude: position.latitude,
           logitude: position.longitude,
-          discription: discription);
+          discription: discription,
+          phoneNumber: phoneNumber!
+          );
       await firestore
           .collection('userDetails')
           .doc(workType)
