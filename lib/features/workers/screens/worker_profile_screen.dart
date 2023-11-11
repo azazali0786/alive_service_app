@@ -6,7 +6,8 @@ class WorkerProfileScreen extends ConsumerStatefulWidget {
   final String profileType;
   final Map<String, dynamic> worker;
   static const routeName = "/Worker-Profile-Screen";
-  const WorkerProfileScreen({super.key, required this.worker, required this.profileType});
+  const WorkerProfileScreen(
+      {super.key, required this.worker, required this.profileType});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -14,13 +15,51 @@ class WorkerProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
+    String workType = "Electrician";
+
   @override
   Widget build(BuildContext context) {
     double rating = 3.5;
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title:  Text(widget.profileType),
+        title: Text(widget.profileType),
+        actions: [
+          PopupMenuButton(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: Row(
+                children: [
+                  Text(
+                    workType,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const Icon(
+                    Icons.arrow_drop_down,
+                    size: 40,
+                  ), // Replace with your desired icon
+                ],
+              ),
+            ),
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: "Electrician",
+                child: Text("Electrician")
+                ),
+              const PopupMenuItem(
+                value: "Plumber",
+                child: Text("Plumber")),
+              const PopupMenuItem(
+                value: "Fridge Mistry",
+                child: Text("Fridge Mistry")),
+            ],
+            onSelected: (newValue) {
+              setState(() {
+                workType = newValue;
+              });
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

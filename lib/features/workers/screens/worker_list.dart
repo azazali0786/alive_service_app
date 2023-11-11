@@ -36,14 +36,42 @@ class WorkerListState extends ConsumerState<WorkerList> {
         date: date);
   }
 
+  String radius = '5';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: const [
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Icon(Icons.location_city),
+        actions: [
+          PopupMenuButton(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: Row(
+                children: [
+                  Text(
+                    "Radious",
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(
+                    width: 12,
+                  ),
+                  Text(
+                    "${radius}km",
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
+            itemBuilder: (context) => [
+              const PopupMenuItem(value: "5", child: Text('5')),
+              const PopupMenuItem(value: "10", child: Text('10')),
+              const PopupMenuItem(value: "15", child: Text('15')),
+              const PopupMenuItem(value: "20", child: Text('20')),
+            ],
+            onSelected: (newValue) {
+              setState(() {
+                radius = newValue;
+              });
+            },
           ),
         ],
         title: const Text("Current Location"),
@@ -69,12 +97,15 @@ class WorkerListState extends ConsumerState<WorkerList> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Top Searches",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 10,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Rating..",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Switch(value: false, onChanged: (onchange) {})
+              ],
             ),
             Container(
               width: size.width,

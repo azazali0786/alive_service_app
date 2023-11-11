@@ -15,7 +15,7 @@ class MenuPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const name = 'Azaz Ali';
-    const email = 'azazwinner786@gmail.com';
+    const email = '+91 8800646224';
     const urlImage =
         'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80';
     return Drawer(

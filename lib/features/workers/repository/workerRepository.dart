@@ -1,5 +1,6 @@
 import 'package:alive_service_app/common/utils/utils.dart';
 import 'package:alive_service_app/models/call_details_model.dart';
+import 'package:alive_service_app/models/user_detail_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,20 +26,21 @@ class WorkerRepository {
     required this.auth,
   });
 
-  // Future<Map<String, dynamic>> getWorkerData(String workType, String workerId) async {
-  //     Map<String, dynamic> specificMap = {};
-  //      DocumentSnapshot documentSnapshot =await firestore
-  //       .collection('userDetails')
-  //       .doc(workType)
-  //       .collection('Users')
-  //       .doc('workerId')
-  //       .get();
-  //     if (documentSnapshot.exists) {
-  //       return documentSnapshot.data() as Map<String, dynamic>;
-  //     } else {
-  //        return specificMap = {};
-  //     }
-  // }
+  Future<UserDetail> getWorkerData(String workType, String workerId) async {
+    DocumentSnapshot snap = await firestore
+        .collection('userDetails')
+        .doc(workType)
+        .collection('Users')
+        .doc(workerId)
+        .get();
+
+    print('..');
+    // print(snap.data());
+
+    UserDetail user = UserDetail.fromSnap(snap);
+    print(user.discription);
+    return user;
+  }
 
   Stream<QuerySnapshot> getQuery() {
     return firestore
@@ -74,5 +76,4 @@ class WorkerRepository {
       showSnackBar(context: context, content: e.toString());
     }
   }
-  
 }

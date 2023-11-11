@@ -1,5 +1,7 @@
 import 'package:alive_service_app/features/workers/controller/workerController.dart';
 import 'package:alive_service_app/features/workers/screens/work_list.dart';
+import 'package:alive_service_app/features/workers/screens/worker_profile_screen.dart';
+import 'package:alive_service_app/models/user_detail_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,19 +17,18 @@ class CallhistoryList extends ConsumerStatefulWidget {
 class HistoryPageState extends ConsumerState<CallhistoryList> {
   ScrollController scrollController = ScrollController();
   Stream<QuerySnapshot>? query;
-  // Map<String, dynamic> workerData = {};
+  UserDetail? workerData;
   @override
-  void initState(){
+  void initState() {
     query = ref.read(workerControllerProvidere).workerRepository.getQuery();
     super.initState();
   }
 
-  // void getworkerData(String workType, String workerId) async {
-  //   workerData = await ref
-  //       .read(workerControllerProvidere)
-  //       .workerRepository
-  //       .getWorkerData(workType, workerId);
-  // }
+  void getworkerData(String workType, String workerId) async {
+    workerData = await ref
+        .read(workerControllerProvidere)
+        .getWorkerData(workType, workerId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,15 +71,18 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
         }
         return ListView.builder(
             controller: scrollController,
-            itemCount: snapshot.data!.docs.length,
+            itemCount: 5,
             itemBuilder: (context, index) {
               final worker =
                   snapshot.data!.docs[index].data() as Map<String, dynamic>;
-              // getworkerData(worker['workType'],worker['workerId']);
               return Padding(
                 padding: const EdgeInsets.all(15),
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    getworkerData(worker['workType'], worker['workerId']);
+                    // Navigator.pushNamed(context, WorkerProfileScreen.routeName,
+                    //     arguments: workerData);
+                  },
                   child: Row(
                     children: [
                       Container(
@@ -98,12 +102,12 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                             Text(
+                            Text(
                               "workerData",
                               style: const TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.bold),
                             ),
-                             Text(
+                            Text(
                               "workerDat",
                               style: const TextStyle(
                                   fontSize: 13, fontWeight: FontWeight.bold),
