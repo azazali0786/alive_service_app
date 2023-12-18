@@ -21,7 +21,4 @@ class WorkerController {
   Stream<QuerySnapshot> getQuery() {
     return workerRepository.getQuery();
   }
-  void getChaman(){
-
-  }
 }

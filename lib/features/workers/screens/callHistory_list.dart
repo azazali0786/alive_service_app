@@ -17,17 +17,18 @@ class CallhistoryList extends ConsumerStatefulWidget {
 class HistoryPageState extends ConsumerState<CallhistoryList> {
   ScrollController scrollController = ScrollController();
   Stream<QuerySnapshot>? query;
-  UserDetail? workerData;
+  Map<String, dynamic> workerData={};//shuru main null rahega iski wajah se
   @override
   void initState() {
     query = ref.read(workerControllerProvidere).workerRepository.getQuery();
     super.initState();
   }
 
-  void getworkerData(String workType, String workerId) async {
-    workerData = await ref
+  void getworkerData(String workType, String workerId) async {//ye function 4 bar call ho raha hai
+    UserDetail data = await ref
         .read(workerControllerProvidere)
         .getWorkerData(workType, workerId);
+        workerData = data.toMap();//set state use kerna khatarnak hai idhar
   }
 
   @override
@@ -71,17 +72,17 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
         }
         return ListView.builder(
             controller: scrollController,
-            itemCount: 5,
+            itemCount: 4,
             itemBuilder: (context, index) {
               final worker =
                   snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                    // getworkerData(worker['workType'], worker['workerId']);
               return Padding(
                 padding: const EdgeInsets.all(15),
                 child: InkWell(
                   onTap: () {
-                    getworkerData(worker['workType'], worker['workerId']);
-                    // Navigator.pushNamed(context, WorkerProfileScreen.routeName,
-                    //     arguments: workerData);
+                    Navigator.pushNamed(context, WorkerProfileScreen.routeName,
+                        arguments: workerData);
                   },
                   child: Row(
                     children: [
@@ -103,12 +104,12 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "workerData",
+                              ' ',
                               style: const TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              "workerDat",
+                              ' ',
                               style: const TextStyle(
                                   fontSize: 13, fontWeight: FontWeight.bold),
                             ),

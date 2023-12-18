@@ -42,7 +42,7 @@ class UserDetail {
   factory UserDetail.fromMap(Map<String, dynamic> map) {
     return UserDetail(
         mainImage: map['mainImage'] as String,
-        moreImage: List<String>.from((map['moreImage'] as List<String>)),
+        moreImage: map['moreImage'] as List<dynamic>,
         shopeName: map['shopeName'] as String,
         workType: map['workType'] as String,
         timeIn: map['timeIn'] as String,
@@ -53,20 +53,20 @@ class UserDetail {
         phoneNumber: map['phoneNumber'] as String);
   }
 
-  static UserDetail fromSnap(DocumentSnapshot snap) {
-    Map<String, dynamic> snapshot = snap.data()! as Map<String, dynamic>;
-    return UserDetail(
-      mainImage: snapshot["mainImage"] ?? "",
-      moreImage: snapshot["moreImage"] ?? [],
-      shopeName: snapshot["shopeName"] ?? "",
-      workType: snapshot["workType"] ?? "",
-      timeIn: snapshot["timeIn"] ?? "",
-      timeOut: snapshot["timeOut"] ?? "",
-      latitude: snapshot["latitude"] ?? 0.0,
-      logitude: snapshot["longitude"] ?? 0.0,
-      discription: snapshot["discription"] ?? "",
-      phoneNumber: snapshot["phoneNumber"] ?? "",
-    );
-  }
+  // static UserDetail fromSnap(DocumentSnapshot snap) {
+  //   Map<String, dynamic> snapshot = snap.data()! as Map<String, dynamic>;
+  //   return UserDetail(
+  //     mainImage: snapshot["mainImage"] ?? "",
+  //     moreImage: snapshot["moreImage"] ?? [],
+  //     shopeName: snapshot["shopeName"] ?? "",
+  //     workType: snapshot["workType"] ?? "",
+  //     timeIn: snapshot["timeIn"] ?? "",
+  //     timeOut: snapshot["timeOut"] ?? "",
+  //     latitude: snapshot["latitude"] ?? 0.0,
+  //     logitude: snapshot["longitude"] ?? 0.0,
+  //     discription: snapshot["discription"] ?? "",
+  //     phoneNumber: snapshot["phoneNumber"] ?? "",
+  //   );
+  // }
 
 }

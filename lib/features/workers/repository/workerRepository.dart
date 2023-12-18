@@ -33,13 +33,11 @@ class WorkerRepository {
         .collection('Users')
         .doc(workerId)
         .get();
-
-    print('..');
-    // print(snap.data());
-
-    UserDetail user = UserDetail.fromSnap(snap);
-    print(user.discription);
-    return user;
+    Map<String, dynamic> map = snap.data()! as Map<String, dynamic>;
+    UserDetail workerData = UserDetail.fromMap(map);
+    // print('function call');
+    // print(workerData.discription);
+    return workerData;
   }
 
   Stream<QuerySnapshot> getQuery() {

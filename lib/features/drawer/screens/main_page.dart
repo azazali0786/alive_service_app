@@ -1,3 +1,4 @@
+import 'package:alive_service_app/features/auth/screens/login_page.dart';
 import 'package:alive_service_app/features/auth/screens/otp_page.dart';
 import 'package:alive_service_app/features/drawer/screens/menu_page.dart';
 import 'package:alive_service_app/user_information_page.dart';
@@ -42,7 +43,7 @@ class _MainPageState extends State<MainPage> {
       case 'People':
         return const UserInformationPage();
       case 'Favourites':
-        return const OtpPage(verificationId: 'verificationId');
+        return const LoginPage();
       default:
         return const OtpPage(verificationId: 'verificationId');
     }
