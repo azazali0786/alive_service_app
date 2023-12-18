@@ -1,7 +1,5 @@
 import 'package:alive_service_app/features/workers/controller/workerController.dart';
-import 'package:alive_service_app/features/workers/screens/work_list.dart';
 import 'package:alive_service_app/features/workers/screens/worker_profile_screen.dart';
-import 'package:alive_service_app/models/user_detail_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,20 +15,7 @@ class CallhistoryList extends ConsumerStatefulWidget {
 class HistoryPageState extends ConsumerState<CallhistoryList> {
   ScrollController scrollController = ScrollController();
   Stream<QuerySnapshot>? query;
-  Map<String, dynamic> workerData={};//shuru main null rahega iski wajah se
-  @override
-  void initState() {
-    query = ref.read(workerControllerProvidere).workerRepository.getQuery();
-    super.initState();
-  }
-
-  void getworkerData(String workType, String workerId) async {//ye function 4 bar call ho raha hai
-    UserDetail data = await ref
-        .read(workerControllerProvidere)
-        .getWorkerData(workType, workerId);
-        workerData = data.toMap();//set state use kerna khatarnak hai idhar
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +42,7 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
   Widget getBody() {
     var size = MediaQuery.of(context).size;
     return StreamBuilder<QuerySnapshot>(
-      stream: query,
+      stream: ref.read(workerControllerProvidere).workerRepository.getQuery(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
@@ -72,17 +57,16 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
         }
         return ListView.builder(
             controller: scrollController,
-            itemCount: 4,
+            itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
               final worker =
                   snapshot.data!.docs[index].data() as Map<String, dynamic>;
-                    // getworkerData(worker['workType'], worker['workerId']);
               return Padding(
                 padding: const EdgeInsets.all(15),
                 child: InkWell(
                   onTap: () {
                     Navigator.pushNamed(context, WorkerProfileScreen.routeName,
-                        arguments: workerData);
+                        arguments: {'workType': worker['workType'], 'workerId': worker['workerId']});
                   },
                   child: Row(
                     children: [
@@ -92,7 +76,7 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             image: DecorationImage(
-                                image: NetworkImage(imgList[index]),
+                                image: NetworkImage(worker['mainImage']),
                                 fit: BoxFit.cover)),
                       ),
                       SizedBox(
@@ -104,12 +88,12 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              ' ',
+                              worker['shopName'],
                               style: const TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              ' ',
+                              worker['workType'],
                               style: const TextStyle(
                                   fontSize: 13, fontWeight: FontWeight.bold),
                             ),

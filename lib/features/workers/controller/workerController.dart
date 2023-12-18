@@ -14,7 +14,7 @@ class WorkerController {
     required this.workerRepository,
   });
 
-  Future<UserDetail> getWorkerData(String workType, String workerId) {
+  Future<Map<String, dynamic>> getWorkerData(String workType, String workerId) {
     return workerRepository.getWorkerData(workType, workerId);
   }
 

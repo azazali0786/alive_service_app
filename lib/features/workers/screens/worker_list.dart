@@ -29,6 +29,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
         .call(worker['phoneNumber']);
     ref.read(workerControllerProvidere).workerRepository.setCallHistory(
         context: context,
+        mainImage: worker['mainImage'],
         workerId: workerId,
         shopeName: worker['shopeName'],
         workType: worker['workType'],
@@ -152,13 +153,15 @@ class WorkerListState extends ConsumerState<WorkerList> {
                         List.generate(snapshot.data!.docs.length, (index) {
                   final worker =
                       snapshot.data!.docs[index].data() as Map<String, dynamic>;
+
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: InkWell(
                       onTap: () {
                         Navigator.pushNamed(
                             context, WorkerProfileScreen.routeName,
-                            arguments: worker);
+                            arguments: {'workType': widget.workType, 'workerId': snapshot.data!.docs[index].id},
+                            );
                       },
                       child: Row(
                         children: [

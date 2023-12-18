@@ -25,19 +25,23 @@ class WorkerRepository {
     required this.firestore,
     required this.auth,
   });
+  
 
-  Future<UserDetail> getWorkerData(String workType, String workerId) async {
-    DocumentSnapshot snap = await firestore
-        .collection('userDetails')
-        .doc(workType)
-        .collection('Users')
-        .doc(workerId)
-        .get();
-    Map<String, dynamic> map = snap.data()! as Map<String, dynamic>;
-    UserDetail workerData = UserDetail.fromMap(map);
-    // print('function call');
-    // print(workerData.discription);
-    return workerData;
+  Future<Map<String, dynamic>> getWorkerData(
+      String workType, String workerId) async {
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('userDetails')
+          .doc(workType)
+          .collection('Users')
+          .doc(workerId)
+          .get();
+      Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
+      return userData;
+    } catch (e) {
+      // Handle errors appropriately
+      throw e.toString();
+    }
   }
 
   Stream<QuerySnapshot> getQuery() {
@@ -54,6 +58,7 @@ class WorkerRepository {
 
   void setCallHistory({
     required BuildContext context,
+    required String mainImage,
     required String workerId,
     required String shopeName,
     required String workType,
@@ -63,7 +68,12 @@ class WorkerRepository {
     try {
       var uniqueId = const Uuid().v4();
       final callDetail = CallDetail(
-          workerId: workerId, workType: workType, timeIn: timeIn, date: date);
+          mainImage: mainImage,
+          shopName: shopeName,
+          workerId: workerId,
+          workType: workType,
+          timeIn: timeIn,
+          date: date);
       await firestore
           .collection('callDetails')
           .doc(auth.currentUser!.uid)
