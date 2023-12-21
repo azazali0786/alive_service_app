@@ -128,14 +128,17 @@ class UserDetailsRepository {
           latitude: position.latitude,
           logitude: position.longitude,
           discription: discription,
-          phoneNumber: phoneNumber!
-          );
+          phoneNumber: phoneNumber!);
       await firestore
           .collection('userDetails')
           .doc(workType)
           .collection('Users')
           .doc(auth.currentUser!.uid)
           .set(userDetail.toMap());
+      await firestore
+          .collection('userDetails')
+          .doc(workType)
+          .set({'id': workType});
     } catch (e) {
       showSnackBar(context: context, content: e.toString());
     }

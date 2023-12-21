@@ -1,22 +1,30 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:alive_service_app/features/details/screens/user_detail_page.dart';
+import 'package:alive_service_app/features/workers/screens/worker_profile_screen.dart';
 import 'package:flutter/material.dart';
 
-class MenuPage extends StatelessWidget {
-  String currentPage;
-  ValueChanged<String> onSelectedPage;
-  MenuPage({
+class MenuPage extends StatefulWidget {
+  final Map<String, List<String>> userIdWorkType;
+  final String currentPage;
+  final ValueChanged<String> onSelectedPage;
+  const MenuPage({
     super.key,
-    required this.currentPage,
+    required this.userIdWorkType,
+    required this.currentPage, //stateless honi chahiye
     required this.onSelectedPage,
   });
 
   @override
+  State<MenuPage> createState() => _MenuPageState();
+}
+
+class _MenuPageState extends State<MenuPage> {
+  @override
   Widget build(BuildContext context) {
-    const name = 'Azaz Ali';
-    const email = '+91 8800646224';
-    const urlImage =
+    print('object');
+    String currentPage = widget.currentPage;
+    final name = widget.userIdWorkType['userData']?[1] ?? "NoUser";
+    final email = widget.userIdWorkType['userData']?[2] ?? "Please Loging";
+    final urlImage = widget.userIdWorkType['userData']?[0] ??
         'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80';
     return Drawer(
       child: Material(
@@ -27,7 +35,15 @@ class MenuPage extends StatelessWidget {
               urlImage: urlImage,
               name: name,
               email: email,
-              onClicked: () {},
+              onClicked: () {
+                if (widget.userIdWorkType['userId'] != null) { 
+                  Navigator.pushNamed(context, WorkerProfileScreen.routeName,
+                      arguments: {
+                        'workType': widget.userIdWorkType['workTypes']!,
+                        'workerId': [widget.userIdWorkType['userId']![0]]
+                      });
+                }
+              },
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -46,7 +62,7 @@ class MenuPage extends StatelessWidget {
                     text: 'People',
                     icon: Icons.people,
                     onClicked: () {
-                      onSelectedPage('People');
+                      widget.onSelectedPage('People');
                       currentPage = 'People';
                     },
                   ),
@@ -55,7 +71,7 @@ class MenuPage extends StatelessWidget {
                       text: 'Favourites',
                       icon: Icons.favorite_border,
                       onClicked: () {
-                        onSelectedPage('Favourites');
+                        widget.onSelectedPage('Favourites');
                         currentPage = 'Favourites';
                       }),
                   const SizedBox(height: 16),
@@ -104,7 +120,7 @@ class MenuPage extends StatelessWidget {
       selectedColor: Colors.white,
       child: ListTile(
         selectedTileColor: Colors.black26,
-        selected: currentPage == text,
+        selected: widget.currentPage == text,
         leading: Icon(icon, color: color),
         title: Text(text, style: const TextStyle(color: color)),
         hoverColor: hoverColor,
@@ -152,27 +168,3 @@ Widget buildHeader({
         ),
       ),
     );
-
-
-
-// Widget buildSearchField() {
-//   return TextField(
-  //     style:const TextStyle(color: color),
-  //     decoration: InputDecoration(
-  //       contentPadding:const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-  //       hintText: 'Search',
-  //       hintStyle: const TextStyle(color: color),
-  //       prefixIcon: const Icon(Icons.search, color: color),
-  //       filled: true,
-  //       fillColor: Colors.white12,
-  //       enabledBorder: OutlineInputBorder(
-  //         borderRadius: BorderRadius.circular(5),
-  //         borderSide: BorderSide(color: color.withOpacity(0.7)),
-  //       ),
-  //       focusedBorder: OutlineInputBorder(
-  //         borderRadius: BorderRadius.circular(5),
-  //         borderSide: BorderSide(color: color.withOpacity(0.7)),
-  //       ),
-  //     ),
-  //   );
-// }

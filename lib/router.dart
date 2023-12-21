@@ -20,10 +20,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
               ));
 
     case WorkerProfileScreen.routeName:
-      final workerInf = settings.arguments as Map<String, dynamic>;
+      final workerInf = settings.arguments as Map<String, List<String>>;
       return MaterialPageRoute(
           builder: (context) => WorkerProfileScreen(
-                profileType: "workerProfile",
                 workerInf: workerInf,
               ));        
 

@@ -1,24 +1,40 @@
 import 'package:alive_service_app/features/auth/screens/login_page.dart';
 import 'package:alive_service_app/features/auth/screens/otp_page.dart';
+import 'package:alive_service_app/features/drawer/controller/drawer_controller.dart';
 import 'package:alive_service_app/features/drawer/screens/menu_page.dart';
 import 'package:alive_service_app/user_information_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 
-class MainPage extends StatefulWidget {
+class MainPage extends ConsumerStatefulWidget {
   const MainPage({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  ConsumerState<MainPage> createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends ConsumerState<MainPage> {
+  Map<String, List<String>> userIdWorkType = {};
+  @override
+  void initState() {
+    userWorkData();
+    super.initState();
+  }
+
+  void userWorkData() async {
+    userIdWorkType = await ref.read(drawerControllerProvider).userWorkData();
+    setState(() {
+    });
+  }
+
   String currentPage = 'People';
 
   @override
   Widget build(BuildContext context) {
     return ZoomDrawer(
       menuScreen: MenuPage(
+          userIdWorkType: userIdWorkType,
           currentPage: currentPage,
           onSelectedPage: (pageName) {
             setState(() {

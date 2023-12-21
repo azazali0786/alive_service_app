@@ -42,7 +42,7 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
   Widget getBody() {
     var size = MediaQuery.of(context).size;
     return StreamBuilder<QuerySnapshot>(
-      stream: ref.read(workerControllerProvidere).workerRepository.getQuery(),
+      stream: ref.read(workerControllerProvidere).getQuery(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
@@ -66,7 +66,7 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
                 child: InkWell(
                   onTap: () {
                     Navigator.pushNamed(context, WorkerProfileScreen.routeName,
-                        arguments: {'workType': worker['workType'], 'workerId': worker['workerId']});
+                        arguments: {'workType': [worker['workType'].toString()], 'workerId': [worker['workerId'].toString()]});
                   },
                   child: Row(
                     children: [

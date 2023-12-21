@@ -4,11 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_star_rating_nsafe/smooth_star_rating.dart';
 
 class WorkerProfileScreen extends ConsumerStatefulWidget {
-  final String profileType;
-  final Map<String, dynamic> workerInf;
+  final Map<String, List<String>> workerInf;
   static const routeName = "/Worker-Profile-Screen";
   const WorkerProfileScreen(
-      {super.key, required this.workerInf, required this.profileType});
+      {super.key, required this.workerInf});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -16,8 +15,13 @@ class WorkerProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
-  String workType = "Electrician";
-
+  String workType = '';
+  
+  @override
+  void initState() {
+     workType = widget.workerInf['workType']![0];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +29,10 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.profileType),
+        title: IconButton(icon: const Icon(Icons.edit_outlined),onPressed: () {
+        },),
         actions: [
-          PopupMenuButton(
+          widget.workerInf['workType']!.length!=1?PopupMenuButton(
             child: Padding(
               padding: const EdgeInsets.only(right: 12),
               child: Row(
@@ -39,28 +44,32 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                   const Icon(
                     Icons.arrow_drop_down,
                     size: 40,
-                  ), // Replace with your desired icon
+                  ),
                 ],
               ),
             ),
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                  value: "Electrician", child: Text("Electrician")),
-              const PopupMenuItem(value: "Plumber", child: Text("Plumber")),
-              const PopupMenuItem(
-                  value: "Fridge Mistry", child: Text("Fridge Mistry")),
-            ],
+            itemBuilder: (BuildContext context) {
+              return widget.workerInf['workType']!.map((String item) {
+                return PopupMenuItem<String>(
+                  value: item,
+                  child: Text(item),
+                );
+              }).toList();
+            },
             onSelected: (newValue) {
               setState(() {
                 workType = newValue;
               });
             },
-          ),
+          ):const SizedBox(),
         ],
       ),
       body: FutureBuilder(
-        future: ref.read(workerControllerProvidere).workerRepository.
-        getWorkerData(widget.workerInf['workType'], widget.workerInf['workerId']),
+        future: ref
+            .read(workerControllerProvidere)
+            .workerRepository
+            .getWorkerData(workType,
+                widget.workerInf['workerId']![0]),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
@@ -75,15 +84,7 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                 child: Column(
                   children: [
                     Stack(children: [
-                      Container(
-                        height: size.height * 0.25,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          image: DecorationImage(
-                              image: NetworkImage(worker['mainImage']),
-                              fit: BoxFit.fill),
-                        ),
-                      ),
+                      CircleAvatar(radius: 70,backgroundImage: NetworkImage(worker['mainImage']),),
                       Positioned(
                           right: size.width * 0.5,
                           top: 12,
@@ -290,6 +291,3 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
     );
   }
 }
-
-
-

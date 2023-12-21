@@ -29,7 +29,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
         .call(worker['phoneNumber']);
     ref.read(workerControllerProvidere).workerRepository.setCallHistory(
         context: context,
-        mainImage: worker['mainImage'],
+        mainImage: worker['mainImage'], 
         workerId: workerId,
         shopeName: worker['shopeName'],
         workType: worker['workType'],
@@ -48,11 +48,11 @@ class WorkerListState extends ConsumerState<WorkerList> {
               padding: const EdgeInsets.only(right: 12),
               child: Row(
                 children: [
-                  Text(
+                  const Text(
                     "Radious",
-                    style: const TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 18),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 12,
                   ),
                   Text(
@@ -160,7 +160,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
                       onTap: () {
                         Navigator.pushNamed(
                             context, WorkerProfileScreen.routeName,
-                            arguments: {'workType': widget.workType, 'workerId': snapshot.data!.docs[index].id},
+                            arguments: {'workType': [widget.workType], 'workerId': [snapshot.data!.docs[index].id]},
                             );
                       },
                       child: Row(

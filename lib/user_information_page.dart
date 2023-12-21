@@ -2,6 +2,7 @@ import 'package:alive_service_app/features/workers/screens/callHistory_list.dart
 import 'package:alive_service_app/features/workers/screens/work_list.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
+
 class UserInformationPage extends StatefulWidget {
   static const routeName = "/user-information-screen";
   const UserInformationPage({super.key});
@@ -25,6 +26,7 @@ class _UserInformationPageState extends State<UserInformationPage> {
     _pageController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +38,9 @@ class _UserInformationPageState extends State<UserInformationPage> {
           },
           children: <Widget>[
             const WorkList(),
-            Container(color: Colors.red,),
+            Container(
+              color: Colors.red,
+            ),
             const CallhistoryList()
           ],
         ),
@@ -49,20 +53,15 @@ class _UserInformationPageState extends State<UserInformationPage> {
         },
         items: <BottomNavyBarItem>[
           BottomNavyBarItem(
-            title: const Text('     Home'),
-            icon: const Icon(Icons.home)
-          ),
+              title: const Text('     Home'), icon: const Icon(Icons.home)),
           BottomNavyBarItem(
-            title: const Text('     FreArti..'),
-            icon: const Icon(Icons.apps)
-          ),
+              title: const Text('     FreArti..'),
+              icon: const Icon(Icons.apps)),
           BottomNavyBarItem(
-            title: const Text('     History'),
-            icon: const Icon(Icons.history)
-          ),
+              title: const Text('     History'),
+              icon: const Icon(Icons.history)),
         ],
       ),
     );
   }
 }
-

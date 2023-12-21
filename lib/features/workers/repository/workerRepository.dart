@@ -30,7 +30,7 @@ class WorkerRepository {
   Future<Map<String, dynamic>> getWorkerData(
       String workType, String workerId) async {
     try {
-      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      DocumentSnapshot snapshot = await firestore
           .collection('userDetails')
           .doc(workType)
           .collection('Users')
