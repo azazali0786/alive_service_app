@@ -30,6 +30,14 @@ class UserDetailsController {
     return await userDetailsRepository.getlocation(pincode);
   }
 
+  Future<File> urlToFile(String imageUrl) async {
+    return userDetailsRepository.urlToFile(imageUrl);
+  }
+
+  void deleteUserData(String workType) {
+    return userDetailsRepository.deleteUserData(workType);
+  }
+
   void saveUserDetailData(
     BuildContext context,
     File mainImage,
@@ -48,7 +56,6 @@ class UserDetailsController {
         workType: workType,
         time: time,
         position: position,
-        discription: discription
-        );
+        discription: discription);
   }
 }

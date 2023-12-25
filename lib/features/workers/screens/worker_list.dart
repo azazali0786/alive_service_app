@@ -1,8 +1,10 @@
+import 'package:alive_service_app/features/details/controller/user_details_controller.dart';
 import 'package:alive_service_app/features/workers/controller/workerController.dart';
 import 'package:alive_service_app/features/workers/screens/worker_profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:smooth_star_rating_nsafe/smooth_star_rating.dart';
 import 'package:intl/intl.dart';
 
@@ -19,6 +21,13 @@ class WorkerList extends ConsumerStatefulWidget {
 }
 
 class WorkerListState extends ConsumerState<WorkerList> {
+  Position? position;
+  @override
+  void initState() {
+    getPosition();
+    super.initState();
+  }
+
   ScrollController scrollController = ScrollController();
   void getCall(Map<String, dynamic> worker, String workerId) {
     var date = DateFormat.yMMMMd('en_US').format(DateTime.now());
@@ -29,12 +38,19 @@ class WorkerListState extends ConsumerState<WorkerList> {
         .call(worker['phoneNumber']);
     ref.read(workerControllerProvidere).workerRepository.setCallHistory(
         context: context,
-        mainImage: worker['mainImage'], 
+        mainImage: worker['mainImage'],
         workerId: workerId,
         shopeName: worker['shopeName'],
         workType: worker['workType'],
         timeIn: timeIn,
         date: date);
+  }
+
+  void getPosition() async {
+    position =
+        await ref.read(userDetailsControllerProvider).getCurrentLocation();
+    setState(() {
+    });
   }
 
   String radius = '5';
@@ -66,7 +82,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
               const PopupMenuItem(value: "5", child: Text('5')),
               const PopupMenuItem(value: "10", child: Text('10')),
               const PopupMenuItem(value: "15", child: Text('15')),
-              const PopupMenuItem(value: "20", child: Text('20')),
+              const PopupMenuItem(value: "600", child: Text('600')),
             ],
             onSelected: (newValue) {
               setState(() {
@@ -154,14 +170,28 @@ class WorkerListState extends ConsumerState<WorkerList> {
                   final worker =
                       snapshot.data!.docs[index].data() as Map<String, dynamic>;
 
+                  // double distance = ref
+                  //     .read(workerControllerProvidere)
+                  //     .calculateDistance(
+                  //         position!.latitude,
+                  //         position!.longitude,
+                  //         worker['latitude'],
+                  //         worker['logitude']);
+                  // print(distance);
+                  // distance < int.parse(radius)? const SizedBox():
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: InkWell(
                       onTap: () {
                         Navigator.pushNamed(
-                            context, WorkerProfileScreen.routeName,
-                            arguments: {'workType': [widget.workType], 'workerId': [snapshot.data!.docs[index].id]},
-                            );
+                          context,
+                          WorkerProfileScreen.routeName,
+                          arguments: {
+                            'workType': [widget.workType],
+                            'workerId': [snapshot.data!.docs[index].id],
+                            'currentUser': ['false']
+                          },
+                        );
                       },
                       child: Row(
                         children: [

@@ -1,13 +1,16 @@
+import 'package:alive_service_app/features/details/screens/user_detail_page.dart';
 import 'package:alive_service_app/features/workers/controller/workerController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_star_rating_nsafe/smooth_star_rating.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WorkerProfileScreen extends ConsumerStatefulWidget {
+  final String currentUser;
   final Map<String, List<String>> workerInf;
   static const routeName = "/Worker-Profile-Screen";
   const WorkerProfileScreen(
-      {super.key, required this.workerInf});
+      {super.key, required this.workerInf, required this.currentUser});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -15,11 +18,12 @@ class WorkerProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
+  Map<String, dynamic> workerData = {};
   String workType = '';
-  
+
   @override
   void initState() {
-     workType = widget.workerInf['workType']![0];
+    workType = widget.workerInf['workType']![0];
     super.initState();
   }
 
@@ -29,47 +33,60 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: IconButton(icon: const Icon(Icons.edit_outlined),onPressed: () {
-        },),
+        title: Row(
+          children: [
+            const Text('Profile'),
+            widget.currentUser == 'true'
+                ? IconButton(
+                    icon: const Icon(Icons.edit_outlined),
+                    onPressed: () {
+                      Navigator.pushNamed(context, UserDetailPage.routeName,
+                          arguments: workerData,);
+                    },
+                  )
+                : const SizedBox()
+          ],
+        ),
         actions: [
-          widget.workerInf['workType']!.length!=1?PopupMenuButton(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 12),
-              child: Row(
-                children: [
-                  Text(
-                    workType,
-                    style: const TextStyle(fontSize: 18),
+          widget.workerInf['workType']!.length != 1
+              ? PopupMenuButton(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: Row(
+                      children: [
+                        Text(
+                          workType,
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                        const Icon(
+                          Icons.arrow_drop_down,
+                          size: 40,
+                        ),
+                      ],
+                    ),
                   ),
-                  const Icon(
-                    Icons.arrow_drop_down,
-                    size: 40,
-                  ),
-                ],
-              ),
-            ),
-            itemBuilder: (BuildContext context) {
-              return widget.workerInf['workType']!.map((String item) {
-                return PopupMenuItem<String>(
-                  value: item,
-                  child: Text(item),
-                );
-              }).toList();
-            },
-            onSelected: (newValue) {
-              setState(() {
-                workType = newValue;
-              });
-            },
-          ):const SizedBox(),
+                  itemBuilder: (BuildContext context) {
+                    return widget.workerInf['workType']!.map((String item) {
+                      return PopupMenuItem<String>(
+                        value: item,
+                        child: Text(item),
+                      );
+                    }).toList();
+                  },
+                  onSelected: (newValue) {
+                    setState(() {
+                      workType = newValue;
+                    });
+                  },
+                )
+              : const SizedBox(),
         ],
       ),
       body: FutureBuilder(
         future: ref
             .read(workerControllerProvidere)
             .workerRepository
-            .getWorkerData(workType,
-                widget.workerInf['workerId']![0]),
+            .getWorkerData(workType, widget.workerInf['workerId']![0]),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
@@ -78,13 +95,17 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
           } else {
             // Display the user data
             Map<String, dynamic> worker = snapshot.data as Map<String, dynamic>;
+            workerData = worker;
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
                     Stack(children: [
-                      CircleAvatar(radius: 70,backgroundImage: NetworkImage(worker['mainImage']),),
+                      CircleAvatar(
+                        radius: 70,
+                        backgroundImage: NetworkImage(worker['mainImage']),
+                      ),
                       Positioned(
                           right: size.width * 0.5,
                           top: 12,
@@ -261,22 +282,35 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: SmoothStarRating(
-                          allowHalfRating: true,
-                          onRatingChanged: (v) {
-                            rating = v;
-                            setState(() {});
-                          },
-                          starCount: 5,
-                          rating: rating,
-                          size: 40.0,
-                          filledIconData: Icons.star,
-                          halfFilledIconData: Icons.star_half_outlined,
-                          color: Colors.green,
-                          borderColor: Colors.green,
-                          spacing: 0.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SmoothStarRating(
+                            allowHalfRating: true,
+                            onRatingChanged: (v) {
+                              rating = v;
+                              setState(() {});
+                            },
+                            starCount: 5,
+                            rating: rating,
+                            size: 40.0,
+                            filledIconData: Icons.star,
+                            halfFilledIconData: Icons.star_half_outlined,
+                            color: Colors.green,
+                            borderColor: Colors.green,
+                            spacing: 0.0),
+                        widget.currentUser == 'false'
+                            ? IconButton(
+                                onPressed: () {
+                                  launchUrl(Uri.parse(
+                                      'https://wa.me/${worker['phoneNumber']}'));
+                                },
+                                icon: const Icon(
+                                  Icons.whatshot,
+                                  color: Colors.green,
+                                ))
+                            : const SizedBox()
+                      ],
                     ),
                     SizedBox(
                       height: size.height * 0.03,

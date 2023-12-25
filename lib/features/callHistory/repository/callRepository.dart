@@ -9,7 +9,7 @@ final callHistoryRepositoryProvider =
 class CallHistoryRepository {
 
   void call(String text) async{
-     bool? res = await FlutterPhoneDirectCaller.callNumber(text);
+     FlutterPhoneDirectCaller.callNumber(text);
   }
   
   getAvator(CallType callType){
@@ -26,23 +26,8 @@ class CallHistoryRepository {
 Future<Iterable<CallLogEntry>> getCallLogs(){
   return CallLog.get();
 }
-  
-  // String formatDate(DateTime dt){
-  
-  //     return DateFormat('d-MMM-y H:m:s').format(dt);
-  // }
 
-  // getTitle(CallLogEntry entry){
-    
-  //   if(entry.name == null)
-  //     return Text(entry.number!);
-  //   if(entry.name!.isEmpty)
-  //     return Text(entry.number!);
-  //   else
-  //     return Text(entry.name!);
-  // }
-
-  String getTime(int duration){
+  String getTime(int duration){                          //no need this repository
     Duration d1 = Duration(seconds: duration);
     String formatedDuration = "";
     if(d1.inHours > 0){

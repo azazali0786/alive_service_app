@@ -1,3 +1,4 @@
+import 'package:alive_service_app/features/auth/screens/login_page.dart';
 import 'package:alive_service_app/features/workers/screens/callHistory_list.dart';
 import 'package:alive_service_app/features/workers/screens/work_list.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
@@ -36,12 +37,10 @@ class _UserInformationPageState extends State<UserInformationPage> {
           onPageChanged: (index) {
             setState(() => _currentIndex = index);
           },
-          children: <Widget>[
-            const WorkList(),
-            Container(
-              color: Colors.red,
-            ),
-            const CallhistoryList()
+          children:const <Widget>[
+             WorkList(),
+             CallhistoryList(),
+             LoginPage()
           ],
         ),
       ),
@@ -55,11 +54,12 @@ class _UserInformationPageState extends State<UserInformationPage> {
           BottomNavyBarItem(
               title: const Text('     Home'), icon: const Icon(Icons.home)),
           BottomNavyBarItem(
-              title: const Text('     FreArti..'),
-              icon: const Icon(Icons.apps)),
-          BottomNavyBarItem(
               title: const Text('     History'),
               icon: const Icon(Icons.history)),
+          BottomNavyBarItem(
+              title: const Text('     Login'),
+              icon: const Icon(Icons.login)),
+          
         ],
       ),
     );

@@ -23,11 +23,20 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       final workerInf = settings.arguments as Map<String, List<String>>;
       return MaterialPageRoute(
           builder: (context) => WorkerProfileScreen(
+                currentUser: workerInf['currentUser']![0],
                 workerInf: workerInf,
               ));        
 
     case UserDetailPage.routeName:
-      return MaterialPageRoute(builder: (context) => const UserDetailPage());
+    final workerData = settings.arguments as Map<String, dynamic>;
+    String currentUser = 'false';
+    if(workerData.isNotEmpty){
+      currentUser= 'true';
+    }
+      return MaterialPageRoute(builder: (context) => UserDetailPage(
+        currentUser: currentUser,
+        worker: workerData,
+      ));
 
     case UserInformationPage.routeName:
       return MaterialPageRoute(

@@ -6,10 +6,11 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationPage extends ConsumerStatefulWidget {
+  final String postalCode;
   final GlobalKey<FormState> formKey;
   final ValueChanged<Position> sendPostion;
   const LocationPage(
-      {super.key, required this.formKey, required this.sendPostion});
+      {super.key, required this.formKey, required this.sendPostion ,required this.postalCode});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _LocationPageState();

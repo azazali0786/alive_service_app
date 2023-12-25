@@ -24,33 +24,62 @@ class _MainPageState extends ConsumerState<MainPage> {
 
   void userWorkData() async {
     userIdWorkType = await ref.read(drawerControllerProvider).userWorkData();
-    setState(() {
-    });
+    setState(() {});
+  }
+
+  Future<bool?> showWarning(BuildContext context) async {
+    return await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Alert"),
+            content: const Text("Do you wanna exit this App"),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context,false);
+                  },
+                  child: const Text('No')),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context,true);
+                  },
+                  child: const Text('Yes')),
+            ],
+          );
+        });
+
   }
 
   String currentPage = 'People';
 
   @override
   Widget build(BuildContext context) {
-    return ZoomDrawer(
-      menuScreen: MenuPage(
-          userIdWorkType: userIdWorkType,
-          currentPage: currentPage,
-          onSelectedPage: (pageName) {
-            setState(() {
-              currentPage = pageName;
-            });
-          }),
-      mainScreen: getPage(),
-      angle: 0,
-      duration: const Duration(milliseconds: 250),
-      showShadow: true,
-      drawerShadowsBackgroundColor: const Color.fromARGB(255, 60, 145, 215),
-      menuBackgroundColor: const Color.fromARGB(255, 179, 154, 153),
-      style: DrawerStyle.style2,
-      moveMenuScreen: false,
-      menuScreenWidth: 450,
-      slideWidth: 150,
+    return WillPopScope(
+      onWillPop: () async {
+        final shouldPop = await showWarning(context);
+        return shouldPop ?? false;
+      },
+      child: ZoomDrawer(
+        menuScreen: MenuPage(
+            userIdWorkType: userIdWorkType,
+            currentPage: currentPage,
+            onSelectedPage: (pageName) {
+              setState(() {
+                currentPage = pageName;
+              });
+            }),
+        mainScreen: getPage(),
+        angle: 0,
+        duration: const Duration(milliseconds: 250),
+        showShadow: true,
+        drawerShadowsBackgroundColor: const Color.fromARGB(255, 60, 145, 215),
+        menuBackgroundColor: const Color.fromARGB(255, 179, 154, 153),
+        style: DrawerStyle.style2,
+        moveMenuScreen: false,
+        menuScreenWidth: 450,
+        slideWidth: 150,
+      ),
     );
   }
 

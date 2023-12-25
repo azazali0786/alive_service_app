@@ -4,14 +4,11 @@ import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
 class GoogleSearchPlacesApi extends StatefulWidget {
-
   @override
   _GoogleSearchPlacesApiState createState() => _GoogleSearchPlacesApiState();
 }
 
 class _GoogleSearchPlacesApiState extends State<GoogleSearchPlacesApi> {
-
-
   var _controller = TextEditingController();
   var uuid = new Uuid();
   String _sessionToken = '1234567890';
@@ -35,15 +32,14 @@ class _GoogleSearchPlacesApiState extends State<GoogleSearchPlacesApi> {
   }
 
   void getSuggestion(String input) async {
-
-
     String kPLACES_API_KEY = "AIzaSyDQoGQXs-YRtVyjMYh0zLHmwBLlNVVlCYQ";
     String type = '(regions)';
 
-    try{
+    try {
       String baseURL =
           'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-      String request = '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken';
+      String request =
+          '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken';
       var response = await http.get(Uri.parse(request));
       var data = json.decode(response.body);
       print('mydata');
@@ -55,10 +51,9 @@ class _GoogleSearchPlacesApiState extends State<GoogleSearchPlacesApi> {
       } else {
         throw Exception('Failed to load predictions');
       }
-    }catch(e){
-     // toastMessage('success');
+    } catch (e) {
+      // toastMessage('success');
     }
-
   }
 
   @override
@@ -66,7 +61,9 @@ class _GoogleSearchPlacesApiState extends State<GoogleSearchPlacesApi> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text('Google Map Search places Api' ,),
+        title: Text(
+          'Google Map Search places Api',
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -81,9 +78,10 @@ class _GoogleSearchPlacesApiState extends State<GoogleSearchPlacesApi> {
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 prefixIcon: Icon(Icons.map),
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.cancel), onPressed: () {
-                  _controller.clear() ;
-                },
+                  icon: Icon(Icons.cancel),
+                  onPressed: () {
+                    _controller.clear();
+                  },
                 ),
               ),
             ),
@@ -95,9 +93,7 @@ class _GoogleSearchPlacesApiState extends State<GoogleSearchPlacesApi> {
               itemCount: _placeList.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onTap: () async {
-
-                  },
+                  onTap: () async {},
                   child: ListTile(
                     title: Text(_placeList[index]["description"]),
                   ),
@@ -109,4 +105,4 @@ class _GoogleSearchPlacesApiState extends State<GoogleSearchPlacesApi> {
       ),
     );
   }
- }
+}

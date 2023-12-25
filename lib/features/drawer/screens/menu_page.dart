@@ -40,7 +40,8 @@ class _MenuPageState extends State<MenuPage> {
                   Navigator.pushNamed(context, WorkerProfileScreen.routeName,
                       arguments: {
                         'workType': widget.userIdWorkType['workTypes']!,
-                        'workerId': [widget.userIdWorkType['userId']![0]]
+                        'workerId': [widget.userIdWorkType['userId']![0]],
+                        'currentUser': ['true']
                       });
                 }
               },
@@ -52,7 +53,8 @@ class _MenuPageState extends State<MenuPage> {
                   const SizedBox(height: 12),
                   ElevatedButton.icon(
                     onPressed: () {
-                      Navigator.pushNamed(context, UserDetailPage.routeName);
+                      Map<String, dynamic> worker={};
+                      Navigator.pushNamed(context, UserDetailPage.routeName,arguments: worker);
                     },
                     icon: const Icon(Icons.settings),
                     label: const Text('Add your Work'),

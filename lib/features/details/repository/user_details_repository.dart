@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -14,6 +15,7 @@ import 'package:alive_service_app/features/details/screens/timing_page.dart';
 import 'package:alive_service_app/models/location.dart';
 import 'package:alive_service_app/models/user_detail_model.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 final userDetailsRepositoryProvider = Provider((ref) => UserDetailsRepository(
     firebaseStorage: FirebaseStorage.instance,
@@ -80,6 +82,41 @@ class UserDetailsRepository {
           tmp.map<Locations>((json) => Locations.fromJson(json)).toList();
     });
     return locations;
+  }
+
+  Future<File> urlToFile(String imageUrl) async {
+    var rng = Random();
+    // get temporary directory of device.
+    Directory tempDir = await getTemporaryDirectory();
+    // get temporary path from temporary directory.
+    String tempPath = tempDir.path;
+    // create a new file in temporary path with random file name.
+    File file = File('$tempPath${rng.nextInt(100)}.png');
+    // call http.get method and pass imageurl into it to get response.
+    http.Response response = await http.get(Uri.parse(imageUrl));
+    // write bodybytes received in response to file.
+    await file.writeAsBytes(response.bodyBytes);
+    // now return the file which is created with random name in
+    // temporary directory and image bytes from response is written to // that file.
+    return file;
+  }
+
+  void deleteUserData(String workType) async {
+    final currUser = auth.currentUser!.uid;
+    await firestore
+        .collection('userDetails')
+        .doc(workType)
+        .collection('Users')
+        .doc(currUser)
+        .delete();
+        Reference storageReference = FirebaseStorage.instance.ref().child('userDetails/$workType/$currUser/mainImage/main$currUser');
+        await storageReference.delete();
+     Reference folderReference = FirebaseStorage.instance.ref().child('userDetails/$workType/$currUser/moreImage');
+     ListResult result = await folderReference.listAll();
+     for (Reference ref in result.items) {
+      await ref.delete();
+    }
+
   }
 
   void saveUserDetailData({

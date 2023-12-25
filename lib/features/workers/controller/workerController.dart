@@ -17,6 +17,12 @@ class WorkerController {
     return workerRepository.getWorkerData(workType, workerId);
   }
 
+  double calculateDistance(
+      double startLat, double startLng, double endLat, double endLng) {
+    return workerRepository.calculateDistance(
+        startLat, startLng, endLat, endLng);
+  }
+
   Stream<QuerySnapshot> getQuery() {
     return workerRepository.getQuery();
   }

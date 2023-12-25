@@ -66,7 +66,7 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
                 child: InkWell(
                   onTap: () {
                     Navigator.pushNamed(context, WorkerProfileScreen.routeName,
-                        arguments: {'workType': [worker['workType'].toString()], 'workerId': [worker['workerId'].toString()]});
+                        arguments: {'workType': [worker['workType'].toString()], 'workerId': [worker['workerId'].toString()],'currentUser': ['false']});
                   },
                   child: Row(
                     children: [
