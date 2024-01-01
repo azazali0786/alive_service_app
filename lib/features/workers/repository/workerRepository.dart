@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:alive_service_app/common/utils/utils.dart';
 import 'package:alive_service_app/models/call_details_model.dart';
 import 'package:flutter/material.dart';
@@ -47,31 +46,12 @@ class WorkerRepository {
     return firestore
         .collection('callDetails')
         .doc(auth.currentUser!.uid)
-        .collection('callHistory')
+        .collection('callHistory').orderBy('date', descending: false)
         .snapshots();
   }
 
   void call(String number) async {
     await FlutterPhoneDirectCaller.callNumber(number);
-  }
-
-  double calculateDistance(
-      double startLat, double startLng, double endLat, double endLng) {
-    double earthRadius = 6371.0;
-    final double dLat = (endLat - startLat) * (pi / 180.0);
-    final double dLng = (endLng - startLng) * (pi / 180.0);
-
-    final double a = sin(dLat / 2) * sin(dLat / 2) +
-        cos((startLat) * (pi / 180.0)) *
-            cos((endLat) * (pi / 180.0)) *
-            sin(dLng / 2) *
-            sin(dLng / 2);
-
-    final double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-
-    final double distance = earthRadius * c;
-
-    return distance;
   }
 
   void setCallHistory({

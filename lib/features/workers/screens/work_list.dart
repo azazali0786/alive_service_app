@@ -1,30 +1,15 @@
 import 'package:alive_service_app/features/workers/screens/worker_list.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 class WorkList extends StatelessWidget {
   const WorkList({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Alive_Service"),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: IconButton(onPressed: () {
-            }, icon: const Icon(Icons.search)),
-          ),
-        ],
-        backgroundColor: const Color.fromARGB(255, 0, 132, 255),
-        leading: IconButton(
-            onPressed: () {
-              ZoomDrawer.of(context)!.toggle();
-            },
-            icon: const Icon(Icons.menu)),
-      ),
+      backgroundColor: const Color.fromARGB(255, 255, 233, 240),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(children: [
@@ -131,8 +116,7 @@ class Works extends StatelessWidget {
                           color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold),
-                    )),
-              ),
+                    )),)
             );
           }),
     );
@@ -148,10 +132,10 @@ final List<String> workNameList = [
   'Parler Girl'
 ];
 final List<String> imgList = [
-  'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
-  'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
-  'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=94a1e718d89ca60a6337a6008341ca50&auto=format&fit=crop&w=1950&q=80',
-  'https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=89719a0d55dd05e2deae4120227e6efc&auto=format&fit=crop&w=1953&q=80',
-  'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
-  'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
+  'https://img.freepik.com/free-vector/colorful-plumbing-round-composition_1284-40766.jpg?size=626&ext=jpg&ga=GA1.1.869417839.1647071011&semt=sph',
+  'https://img.freepik.com/free-vector/colorful-electricity-elements-concept_1284-37811.jpg?size=626&ext=jpg&ga=GA1.1.869417839.1647071011&semt=sph',
+  'https://img.freepik.com/free-vector/gluttony-flat-concept-with-man-hugging-fridge-with-junk-food-floor_1284-64200.jpg?size=626&ext=jpg&ga=GA1.1.869417839.1647071011&semt=ais',
+  'https://img.freepik.com/free-vector/isometric-air-conditioning-concept-with-worker-men-installing-cooking-system-vector-illustration_1284-80987.jpg?size=626&ext=jpg&ga=GA1.1.869417839.1647071011&semt=ais',
+  'https://img.freepik.com/free-vector/carpentry-round-concept_1284-38167.jpg?size=626&ext=jpg&ga=GA1.1.869417839.1647071011&semt=sph',
+  'https://img.freepik.com/free-photo/beautician-with-brush-applies-white-moisturizing-mask-face-young-girl-client-spa-beauty-salon_343596-4247.jpg?w=996&t=st=1703509748~exp=1703510348~hmac=d4f4c7d89511cf45044777e267b38263044128be8ab3bbeaa0847ed94f96f3ec'
 ];

@@ -29,6 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   bottom_navy_bar: ^6.0.0
+  cached_network_image: ^3.2.3
   call_log: ^4.0.0
   carousel_slider: ^4.2.1
   cloud_firestore: ^4.13.6
@@ -44,6 +45,7 @@ dependencies:
   flutter_riverpod: ^2.3.2
   flutter_zoom_drawer: ^3.1.1
   geocoding: ^2.1.1
+  geoflutterfire2: ^2.3.15
   geolocator: ^10.1.0
   http: ^0.13.5
   image_picker: ^1.0.4

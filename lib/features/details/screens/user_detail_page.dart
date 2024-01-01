@@ -71,7 +71,6 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
   }
 
   void deleteUserData(String work) {
-    print(work);
     ref.read(userDetailsControllerProvider).deleteUserData(work);
   }
 
@@ -134,6 +133,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                                   TextButton(
                                       onPressed: () {
                                         deleteUserData(workType.toString());
+                                        Navigator.of(context).pop();
                                         Navigator.of(context).pop();
                                       },
                                       child: const Text('Yes')),

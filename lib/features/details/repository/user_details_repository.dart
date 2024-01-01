@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
@@ -109,14 +110,17 @@ class UserDetailsRepository {
         .collection('Users')
         .doc(currUser)
         .delete();
-        Reference storageReference = FirebaseStorage.instance.ref().child('userDetails/$workType/$currUser/mainImage/main$currUser');
-        await storageReference.delete();
-     Reference folderReference = FirebaseStorage.instance.ref().child('userDetails/$workType/$currUser/moreImage');
-     ListResult result = await folderReference.listAll();
-     for (Reference ref in result.items) {
+    Reference storageReference = FirebaseStorage.instance
+        .ref()
+        .child('userDetails/$workType/$currUser/mainImage/main$currUser');
+    await storageReference.delete();
+    Reference folderReference = FirebaseStorage.instance
+        .ref()
+        .child('userDetails/$workType/$currUser/moreImage');
+    ListResult result = await folderReference.listAll();
+    for (Reference ref in result.items) {
       await ref.delete();
     }
-
   }
 
   void saveUserDetailData({
@@ -155,6 +159,11 @@ class UserDetailsRepository {
           "${time[0].hour.toString().padLeft(2, '0')}:${time[0].minute.toString().padLeft(2, '0')} ${time[0].timeFormat}";
       String timeOut =
           "${time[1].hour.toString().padLeft(2, '0')}:${time[1].minute.toString().padLeft(2, '0')} ${time[1].timeFormat}";
+
+      GeoFirePoint myLocation = GeoFlutterFire()
+          .point(latitude: position.latitude, longitude: position.longitude);
+
+
       final userDetail = UserDetail(
           mainImage: imageUrl,
           moreImage: imageUrlList,
@@ -171,7 +180,10 @@ class UserDetailsRepository {
           .doc(workType)
           .collection('Users')
           .doc(auth.currentUser!.uid)
-          .set(userDetail.toMap());
+          .set({
+        ...userDetail.toMap(),
+        'position': myLocation.data,
+      });
       await firestore
           .collection('userDetails')
           .doc(workType)

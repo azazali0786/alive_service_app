@@ -4,6 +4,7 @@ import 'package:alive_service_app/features/workers/screens/worker_profile_screen
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:smooth_star_rating_nsafe/smooth_star_rating.dart';
 import 'package:intl/intl.dart';
@@ -21,6 +22,7 @@ class WorkerList extends ConsumerStatefulWidget {
 }
 
 class WorkerListState extends ConsumerState<WorkerList> {
+  
   Position? position;
   @override
   void initState() {
@@ -30,7 +32,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
 
   ScrollController scrollController = ScrollController();
   void getCall(Map<String, dynamic> worker, String workerId) {
-    var date = DateFormat.yMMMMd('en_US').format(DateTime.now());
+    var date = DateFormat.yMd().format(DateTime.now());
     var timeIn = DateFormat.jm().format(DateTime.now());
     ref
         .read(workerControllerProvidere)
@@ -82,7 +84,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
               const PopupMenuItem(value: "5", child: Text('5')),
               const PopupMenuItem(value: "10", child: Text('10')),
               const PopupMenuItem(value: "15", child: Text('15')),
-              const PopupMenuItem(value: "600", child: Text('600')),
+              const PopupMenuItem(value: "30", child: Text('30')),
             ],
             onSelected: (newValue) {
               setState(() {
@@ -103,6 +105,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
       ),
     );
   }
+
 
   Widget getBody() {
     var size = MediaQuery.of(context).size;
@@ -144,14 +147,16 @@ class WorkerListState extends ConsumerState<WorkerList> {
             const SizedBox(
               height: 12,
             ),
-            StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
+            StreamBuilder<List<DocumentSnapshot>>(
+              stream: GeoFlutterFire().collection(collectionRef: FirebaseFirestore.instance
                   .collection('userDetails')
                   .doc(widget.workType)
-                  .collection('Users')
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                  .collection('Users')).within(
+                    center: position != null
+                        ? GeoFlutterFire().point(latitude: position!.latitude, longitude: position!.longitude)
+                        : GeoFirePoint(0, 0),
+                     radius: double.parse(radius), field: 'position',strictMode: true),
+              builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
                 if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 }
@@ -160,25 +165,16 @@ class WorkerListState extends ConsumerState<WorkerList> {
                   return const Text('Loading...');
                 }
 
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Text('No data available');
                 }
 
                 return Column(
                     children:
-                        List.generate(snapshot.data!.docs.length, (index) {
+                        List.generate(snapshot.data!.length, (index) {
                   final worker =
-                      snapshot.data!.docs[index].data() as Map<String, dynamic>;
+                      snapshot.data![index].data() as Map<String, dynamic>;
 
-                  // double distance = ref
-                  //     .read(workerControllerProvidere)
-                  //     .calculateDistance(
-                  //         position!.latitude,
-                  //         position!.longitude,
-                  //         worker['latitude'],
-                  //         worker['logitude']);
-                  // print(distance);
-                  // distance < int.parse(radius)? const SizedBox():
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: InkWell(
@@ -188,7 +184,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
                           WorkerProfileScreen.routeName,
                           arguments: {
                             'workType': [widget.workType],
-                            'workerId': [snapshot.data!.docs[index].id],
+                            'workerId': [snapshot.data![index].id],
                             'currentUser': ['false']
                           },
                         );
@@ -258,7 +254,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
                           ),
                           IconButton(
                               onPressed: () {
-                                getCall(worker, snapshot.data!.docs[index].id);
+                                getCall(worker, snapshot.data![index].id);
                               },
                               icon: const Icon(Icons.phone)),
                         ],

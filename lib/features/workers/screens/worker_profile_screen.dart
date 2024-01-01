@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_star_rating_nsafe/smooth_star_rating.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+
 class WorkerProfileScreen extends ConsumerStatefulWidget {
   final String currentUser;
   final Map<String, List<String>> workerInf;
@@ -158,8 +159,8 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                         SizedBox(
                           width: size.width * 0.12,
                         ),
-                        IconButton(
-                            onPressed: () {}, icon: const Icon(Icons.call))
+                        widget.currentUser=='false'?IconButton(
+                            onPressed: () {}, icon: const Icon(Icons.call)):const SizedBox()
                       ],
                     ),
                     SizedBox(
