@@ -1,3 +1,4 @@
+import 'package:alive_service_app/features/workers/screens/appbar.dart';
 import 'package:alive_service_app/features/workers/screens/worker_list.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ class WorkList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 233, 240),
-      appBar: AppBar(),
+      appBar: Appbar(),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(children: [

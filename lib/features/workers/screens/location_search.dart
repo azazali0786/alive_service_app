@@ -1,42 +1,26 @@
 import 'package:alive_service_app/features/workers/screens/work_list.dart';
 import 'package:alive_service_app/features/workers/screens/worker_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 
-class Appbar extends StatefulWidget implements PreferredSizeWidget {
-  @override
-  _AppbarState createState() => _AppbarState();
+class Location_search extends StatefulWidget {
+  const Location_search({super.key});
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  State<Location_search> createState() => _Location_searchState();
 }
 
-class _AppbarState extends State<Appbar> {
+class _Location_searchState extends State<Location_search> {
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: const Text("Alive_Service"),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 12),
-          child: IconButton(
-            onPressed: () {
-              showSearch(
+    return Scaffold(
+      appBar: AppBar(actions: [
+        IconButton(onPressed: (){
+          showSearch(
                 context: context,
                 delegate: MySearchDelegate(),
               );
-            },
-            icon: const Icon(Icons.search),
-          ),
-        ),
-      ],
-      backgroundColor: const Color.fromARGB(255, 130, 147, 163),
-      leading: IconButton(
-        onPressed: () {
-          ZoomDrawer.of(context)!.toggle();
-        },
-        icon: const Icon(Icons.menu),
-      ),
+        }, icon: const Icon(Icons.search))
+      ]),
     );
   }
 }

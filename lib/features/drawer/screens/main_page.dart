@@ -50,6 +50,7 @@ class _MainPageState extends ConsumerState<MainPage> {
         });
 
   }
+  final ZoomDrawerController zoomDrawerController = ZoomDrawerController();
 
   String currentPage = 'People';
 
