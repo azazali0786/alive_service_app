@@ -2,6 +2,7 @@ import 'package:alive_service_app/features/auth/screens/login_page.dart';
 import 'package:alive_service_app/features/auth/screens/otp_page.dart';
 import 'package:alive_service_app/features/drawer/controller/drawer_controller.dart';
 import 'package:alive_service_app/features/drawer/screens/menu_page.dart';
+import 'package:alive_service_app/features/workers/screens/appBar.dart';
 import 'package:alive_service_app/user_information_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,6 +17,7 @@ class MainPage extends ConsumerStatefulWidget {
 
 class _MainPageState extends ConsumerState<MainPage> {
   Map<String, List<String>> userIdWorkType = {};
+
   @override
   void initState() {
     userWorkData();
@@ -33,25 +35,24 @@ class _MainPageState extends ConsumerState<MainPage> {
         builder: (context) {
           return AlertDialog(
             title: const Text("Alert"),
-            content: const Text("Do you wanna exit this App"),
+            content: const Text("Do you want to exit this App?"),
             actions: [
               TextButton(
                   onPressed: () {
-                    Navigator.pop(context,false);
+                    Navigator.pop(context, false);
                   },
                   child: const Text('No')),
               TextButton(
                   onPressed: () {
-                    Navigator.pop(context,true);
+                    Navigator.pop(context, true);
                   },
                   child: const Text('Yes')),
             ],
           );
         });
-
   }
-  final ZoomDrawerController zoomDrawerController = ZoomDrawerController();
 
+  final ZoomDrawerController zoomDrawerController = ZoomDrawerController();
   String currentPage = 'People';
 
   @override
@@ -62,6 +63,7 @@ class _MainPageState extends ConsumerState<MainPage> {
         return shouldPop ?? false;
       },
       child: ZoomDrawer(
+        controller: zoomDrawerController,
         menuScreen: MenuPage(
             userIdWorkType: userIdWorkType,
             currentPage: currentPage,
@@ -70,7 +72,10 @@ class _MainPageState extends ConsumerState<MainPage> {
                 currentPage = pageName;
               });
             }),
-        mainScreen: getPage(),
+        mainScreen: Scaffold(
+          appBar: Appbar(zoomDrawerController: zoomDrawerController),
+          body: getPage(),
+        ),
         angle: 0,
         duration: const Duration(milliseconds: 250),
         showShadow: true,
@@ -87,7 +92,7 @@ class _MainPageState extends ConsumerState<MainPage> {
   Widget getPage() {
     switch (currentPage) {
       case 'People':
-        return const UserInformationPage();
+        return UserInformationPage(zoomDrawerController: zoomDrawerController);
       case 'Favourites':
         return const LoginPage();
       default:

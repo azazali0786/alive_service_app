@@ -1,16 +1,16 @@
-import 'package:alive_service_app/features/workers/screens/appbar.dart';
 import 'package:alive_service_app/features/workers/screens/worker_list.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+
 class WorkList extends StatelessWidget {
+  
   const WorkList({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 233, 240),
-      appBar: Appbar(),
+      
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(children: [
@@ -76,15 +76,12 @@ class WorkList extends StatelessWidget {
 }
 
 class Works extends StatelessWidget {
-  const Works({
-    super.key,
-  });
+  const Works({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      // implement GridView.builder
       child: GridView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -107,8 +104,6 @@ class Works extends StatelessWidget {
                     image: DecorationImage(
                         image: NetworkImage(imgList[index]),
                         fit: BoxFit.cover)),
-
-                // Ink.image(image: image) <- we will use this letter.
                 child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Text(
@@ -117,7 +112,8 @@ class Works extends StatelessWidget {
                           color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold),
-                    )),)
+                    )),
+              ),
             );
           }),
     );
@@ -132,6 +128,7 @@ final List<String> workNameList = [
   'Carpentor',
   'Parler Girl'
 ];
+
 final List<String> imgList = [
   'https://img.freepik.com/free-vector/colorful-plumbing-round-composition_1284-40766.jpg?size=626&ext=jpg&ga=GA1.1.869417839.1647071011&semt=sph',
   'https://img.freepik.com/free-vector/colorful-electricity-elements-concept_1284-37811.jpg?size=626&ext=jpg&ga=GA1.1.869417839.1647071011&semt=sph',

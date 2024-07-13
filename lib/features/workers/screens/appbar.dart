@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 
 class Appbar extends StatefulWidget implements PreferredSizeWidget {
+  final ZoomDrawerController zoomDrawerController;
+
+  const Appbar({Key? key, required this.zoomDrawerController}) : super(key: key);
+
   @override
   _AppbarState createState() => _AppbarState();
 
@@ -31,11 +35,15 @@ class _AppbarState extends State<Appbar> {
         ),
       ],
       backgroundColor: const Color.fromARGB(255, 130, 147, 163),
-      leading: IconButton(
-        onPressed: () {
-          ZoomDrawer.of(context)!.toggle();
+      leading: Builder(
+        builder: (context) {
+          return IconButton(
+            onPressed: () {
+              widget.zoomDrawerController.toggle?.call();
+            },
+            icon: const Icon(Icons.menu),
+          );
         },
-        icon: const Icon(Icons.menu),
       ),
     );
   }
@@ -84,7 +92,7 @@ class MySearchDelegate extends SearchDelegate {
             title: Text(suggestion),
             onTap: () {
               query = suggestion;
-              Navigator.pushNamed(context, WorkerList.routeName,arguments: query);
+              Navigator.pushNamed(context, WorkerList.routeName, arguments: query);
             },
           );
         });

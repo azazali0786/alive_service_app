@@ -1,7 +1,7 @@
 import 'package:alive_service_app/features/auth/screens/login_page.dart';
 import 'package:alive_service_app/features/drawer/screens/main_page.dart';
-import 'package:alive_service_app/features/workers/screens/location_search.dart';
 import 'package:alive_service_app/router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,12 +20,23 @@ class AliveApp extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Alive_App',
-      home: const MainPage(),
-      onGenerateRoute: (settings)=>generateRoute(settings),
+      home: const AuthenticationWrapper(),
+      onGenerateRoute: (settings) => generateRoute(settings),
     );
   }
 }
 
+class AuthenticationWrapper extends StatelessWidget {
+  const AuthenticationWrapper({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    final User? user = FirebaseAuth.instance.currentUser;
 
-
+    if (user == null) {
+      return const LoginPage();
+    } else {
+      return const MainPage();
+    }
+  }
+}

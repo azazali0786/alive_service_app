@@ -4,7 +4,6 @@ import 'package:alive_service_app/features/auth/screens/otp_page.dart';
 import 'package:alive_service_app/features/details/screens/user_detail_page.dart';
 import 'package:alive_service_app/features/workers/screens/worker_list.dart';
 import 'package:alive_service_app/features/workers/screens/worker_profile_screen.dart';
-import 'package:alive_service_app/user_information_page.dart';
 import 'package:flutter/material.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -38,9 +37,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         worker: workerData,
       ));
 
-    case UserInformationPage.routeName:
-      return MaterialPageRoute(
-          builder: (context) => const UserInformationPage());
+    // case UserInformationPage.routeName:
+    //   return MaterialPageRoute(
+    //       builder: (context) => const UserInformationPage(zoomDrawerController: ,));
 
     case OtpPage.routeName:
       final verificationId = settings.arguments as String;
