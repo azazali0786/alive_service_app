@@ -20,4 +20,12 @@ class WorkerController {
   Stream<QuerySnapshot> getQuery() {
     return workerRepository.getQuery();
   }
+
+  void rateWorker(workerId, double rating) async {
+    return workerRepository.rateWorker(workerId, rating);
+  }
+
+  Future<void> updateRating(String workType, String workerId, double newRating) {
+    return workerRepository.updateRating(workType, workerId, newRating);
+  }
 }

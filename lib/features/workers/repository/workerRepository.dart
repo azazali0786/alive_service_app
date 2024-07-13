@@ -37,10 +37,69 @@ class WorkerRepository {
       Map<String, dynamic> userData = snapshot.data() as Map<String, dynamic>;
       return userData;
     } catch (e) {
-      // Handle errors appropriately
       throw e.toString();
     }
   }
+
+  Future<void> rateWorker(String workerId, double rating) async {
+  try {
+    // Reference to your workers collection in Firestore
+    CollectionReference workersRef =
+        FirebaseFirestore.instance.collection('workers');
+
+    // Get the current worker document
+    DocumentSnapshot workerSnapshot = await workersRef.doc(workerId).get();
+
+    // Ensure worker data is of type Map<String, dynamic>
+    Map<String, dynamic>? workerData = workerSnapshot.data() as Map<String, dynamic>?;
+
+    if (workerData != null) {
+      // Calculate new average rating
+      int currentRatingsCount = workerData['ratingsCount'] ?? 0;
+      double currentTotalRatings = workerData['totalRatings'] ?? 0.0;
+
+      // Increment ratings count and add new rating to total
+      int newRatingsCount = currentRatingsCount + 1;
+      double newTotalRatings = currentTotalRatings + rating;
+
+      // Calculate new average rating
+      double newAverageRating = newTotalRatings / newRatingsCount;
+
+      // Update the worker's ratings fields
+      await workersRef.doc(workerId).update({
+        'rating': newAverageRating,
+        'ratingsCount': newRatingsCount,
+        'totalRatings': newTotalRatings,
+      });
+
+      // Print success message
+      print('Worker rated successfully');
+    } else {
+      throw 'Worker data not found';
+    }
+  } catch (e) {
+    // Print any errors that occur
+    print('Error rating worker: $e');
+    // Optionally, throw the error or handle it in your UI
+    throw e;
+  }
+}
+
+Future<void> updateRating(String workType, String workerId, double newRating) async {
+    try {
+      await firestore
+          .collection('userDetails')
+          .doc(workType)
+          .collection('Users')
+          .doc(workerId)
+          .update({'rating': newRating});
+    } catch (e) {
+      print('Error updating rating: $e');
+      throw e; // Optionally, you can handle the error more gracefully
+    }
+  }
+
+
 
   Stream<QuerySnapshot> getQuery() {
     return firestore

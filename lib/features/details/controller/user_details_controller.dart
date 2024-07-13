@@ -22,8 +22,8 @@ class UserDetailsController {
     return userDetailsRepository.getCurrentLocation();
   }
 
-  Future<List<Placemark>> getAddressFromLatLong(Position position) {
-    return userDetailsRepository.getAddressFromLatLong(position);
+  Future<List<Placemark>> getAddressFromLatLong(String lati,String logi) {
+    return userDetailsRepository.getAddressFromLatLong(lati,logi);
   }
 
   Future<List<Locations>> getlocation(String pincode) async {

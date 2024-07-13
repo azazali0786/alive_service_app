@@ -1,10 +1,12 @@
 import 'package:alive_service_app/features/details/screens/user_detail_page.dart';
 import 'package:alive_service_app/features/workers/controller/workerController.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_star_rating_nsafe/smooth_star_rating.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 
 class WorkerProfileScreen extends ConsumerStatefulWidget {
   final String currentUser;
@@ -21,6 +23,7 @@ class WorkerProfileScreen extends ConsumerStatefulWidget {
 class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
   Map<String, dynamic> workerData = {};
   String workType = '';
+  double rating = 0;
 
   @override
   void initState() {
@@ -28,9 +31,137 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
     super.initState();
   }
 
+  void _showRatingDialog(BuildContext context, worker) {
+    double rating = 0;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Rate ${worker['rating']}'),
+          content: RatingBar.builder(
+            initialRating: 0,
+            minRating: 1,
+            direction: Axis.horizontal,
+            allowHalfRating: true,
+            itemCount: 5,
+            itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+            itemBuilder: (context, _) => const Icon(
+              Icons.star,
+              color: Colors.amber,
+            ),
+            onRatingUpdate: (value) {
+              rating = value;
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                _submitRating(worker, rating);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+   void _submitRating( worker, double rating) async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    DocumentReference workerRef = FirebaseFirestore.instance
+        .collection('userDetails')
+        .doc(worker['workType'])
+        .collection('Users')
+        .doc(widget.workerInf['workerId']![0]);
+
+    DocumentReference userRatingRef = workerRef
+        .collection('ratings')
+        .doc(userId);
+
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot workerSnapshot = await transaction.get(workerRef);
+      DocumentSnapshot userRatingSnapshot = await transaction.get(userRatingRef);
+
+      if (!workerSnapshot.exists) {
+        throw Exception("Worker does not exist!");
+      }
+
+      double currentOverallRating = (workerSnapshot['overallRating'] as num).toDouble();
+      int currentRatingCount = workerSnapshot['ratingCount'] as int;
+
+      double previousUserRating = 0.0;
+      if (userRatingSnapshot.exists) {
+        previousUserRating = (userRatingSnapshot['rating'] as num).toDouble();
+      }
+
+      double newOverallRating;
+      if (userRatingSnapshot.exists) {
+        newOverallRating = (currentOverallRating * currentRatingCount - previousUserRating + rating) / currentRatingCount;
+      } else {
+        newOverallRating = (currentOverallRating * currentRatingCount + rating) / (currentRatingCount + 1);
+        currentRatingCount += 1;
+      }
+
+      transaction.update(workerRef, {
+        'overallRating': newOverallRating,
+        'ratingCount': currentRatingCount,
+      });
+
+      transaction.set(userRatingRef, {
+        'rating': rating,
+      });
+    });
+
+    setState(() {});
+  }
+
+   
+//   void _submitRating(worker, double rating) async {
+//   // Ensure the worker reference path is correct
+//   DocumentReference workerRef = FirebaseFirestore.instance
+//       .collection('userDetails')
+//       .doc(worker['workType']) // Assuming worker has a field 'workType'
+//       .collection('Users')
+//       .doc(widget.workerInf['workerId']![0]); // Using worker.id directly
+
+//   try {
+//     // Run the transaction
+//     await FirebaseFirestore.instance.runTransaction((transaction) async {
+//       DocumentSnapshot snapshot = await transaction.get(workerRef);
+//       if (!snapshot.exists) {
+//         throw Exception("Worker does not exist!");
+//       }
+
+//       double currentRating = (snapshot['rating'] as num).toDouble();
+//       int currentRatingCount = snapshot['ratingCount'] as int;
+
+//       double newRating = (currentRating * currentRatingCount + rating) /
+//           (currentRatingCount + 1);
+//       int newRatingCount = currentRatingCount + 1;
+
+//       transaction.update(workerRef, {
+//         'rating': newRating,
+//         'ratingCount': newRatingCount,
+//       });
+
+//     });
+
+//     setState(() {}); // Refresh the UI
+//   } catch (e) {
+//     print("Failed to update rating: $e");
+//   }
+// }
+ 
+
   @override
   Widget build(BuildContext context) {
-    double rating = 3.5;
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -42,7 +173,7 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                     icon: const Icon(Icons.edit_outlined),
                     onPressed: () {
                       Navigator.pushNamed(context, UserDetailPage.routeName,
-                          arguments: workerData,);
+                          arguments: workerData);
                     },
                   )
                 : const SizedBox()
@@ -136,8 +267,9 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                                 SmoothStarRating(
                                     allowHalfRating: true,
                                     onRatingChanged: (v) {
-                                      rating = v;
-                                      setState(() {});
+                                      setState(() {
+                                        rating = v;
+                                      });
                                     },
                                     starCount: 5,
                                     rating: rating,
@@ -159,8 +291,10 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                         SizedBox(
                           width: size.width * 0.12,
                         ),
-                        widget.currentUser=='false'?IconButton(
-                            onPressed: () {}, icon: const Icon(Icons.call)):const SizedBox()
+                        widget.currentUser == 'false'
+                            ? IconButton(
+                                onPressed: () {}, icon: const Icon(Icons.call))
+                            : const SizedBox()
                       ],
                     ),
                     SizedBox(
@@ -286,20 +420,11 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SmoothStarRating(
-                            allowHalfRating: true,
-                            onRatingChanged: (v) {
-                              rating = v;
-                              setState(() {});
+                        IconButton(
+                            onPressed: () {
+                              _showRatingDialog(context, worker);
                             },
-                            starCount: 5,
-                            rating: rating,
-                            size: 40.0,
-                            filledIconData: Icons.star,
-                            halfFilledIconData: Icons.star_half_outlined,
-                            color: Colors.green,
-                            borderColor: Colors.green,
-                            spacing: 0.0),
+                            icon: const Icon(Icons.star)),
                         widget.currentUser == 'false'
                             ? IconButton(
                                 onPressed: () {

@@ -30,26 +30,25 @@ class _MainPageState extends ConsumerState<MainPage> {
   }
 
   Future<bool?> showWarning(BuildContext context) async {
-    return await showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text("Alert"),
-            content: const Text("Do you want to exit this App?"),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context, false);
-                  },
-                  child: const Text('No')),
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context, true);
-                  },
-                  child: const Text('Yes')),
-            ],
-          );
-        });
+    return await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Alert"),
+          content: const Text("Do you want to exit this App?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('No'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   final ZoomDrawerController zoomDrawerController = ZoomDrawerController();
@@ -65,13 +64,14 @@ class _MainPageState extends ConsumerState<MainPage> {
       child: ZoomDrawer(
         controller: zoomDrawerController,
         menuScreen: MenuPage(
-            userIdWorkType: userIdWorkType,
-            currentPage: currentPage,
-            onSelectedPage: (pageName) {
-              setState(() {
-                currentPage = pageName;
-              });
-            }),
+          userIdWorkType: userIdWorkType,
+          currentPage: currentPage,
+          onSelectedPage: (pageName) {
+            setState(() {
+              currentPage = pageName;
+            });
+          },
+        ),
         mainScreen: Scaffold(
           appBar: Appbar(zoomDrawerController: zoomDrawerController),
           body: getPage(),

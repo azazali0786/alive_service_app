@@ -59,9 +59,10 @@ class UserDetailsRepository {
     return position;
   }
 
-  Future<List<Placemark>> getAddressFromLatLong(Position position) async {
+  Future<List<Placemark>> getAddressFromLatLong(
+      String lati, String logi) async {
     List<Placemark> placemark =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+        await placemarkFromCoordinates(double.parse(lati), double.parse(logi));
     return placemark;
   }
 
@@ -162,7 +163,6 @@ class UserDetailsRepository {
 
       GeoFirePoint myLocation = GeoFlutterFire()
           .point(latitude: position.latitude, longitude: position.longitude);
-
 
       final userDetail = UserDetail(
           mainImage: imageUrl,

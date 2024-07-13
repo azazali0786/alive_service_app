@@ -47,7 +47,7 @@ class _LocationPageState extends ConsumerState<LocationPage> {
         await ref.read(userDetailsControllerProvider).getCurrentLocation();
     List<Placemark> placemark = await ref
         .read(userDetailsControllerProvider)
-        .getAddressFromLatLong(currPosition!);
+        .getAddressFromLatLong(currPosition!.latitude.toString(),currPosition!.longitude.toString());
     currentPincode = placemark[0].postalCode;
     pincodeController.text = currentPincode!;
     widget.sendPostion(currPosition!);
