@@ -1,7 +1,5 @@
 import 'package:alive_service_app/features/details/screens/user_detail_page.dart';
 import 'package:alive_service_app/features/workers/controller/workerController.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,12 +31,11 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
 
   void _showRatingDialog(BuildContext context, worker) {
     double rating = 0;
-
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Rate ${worker['rating']}'),
+          title: const Text('Rating'),
           content: RatingBar.builder(
             initialRating: 0,
             minRating: 1,
@@ -72,93 +69,12 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
     );
   }
 
-   void _submitRating( worker, double rating) async {
-    final userId = FirebaseAuth.instance.currentUser!.uid;
-
-    DocumentReference workerRef = FirebaseFirestore.instance
-        .collection('userDetails')
-        .doc(worker['workType'])
-        .collection('Users')
-        .doc(widget.workerInf['workerId']![0]);
-
-    DocumentReference userRatingRef = workerRef
-        .collection('ratings')
-        .doc(userId);
-
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot workerSnapshot = await transaction.get(workerRef);
-      DocumentSnapshot userRatingSnapshot = await transaction.get(userRatingRef);
-
-      if (!workerSnapshot.exists) {
-        throw Exception("Worker does not exist!");
-      }
-
-      double currentOverallRating = (workerSnapshot['overallRating'] as num).toDouble();
-      int currentRatingCount = workerSnapshot['ratingCount'] as int;
-
-      double previousUserRating = 0.0;
-      if (userRatingSnapshot.exists) {
-        previousUserRating = (userRatingSnapshot['rating'] as num).toDouble();
-      }
-
-      double newOverallRating;
-      if (userRatingSnapshot.exists) {
-        newOverallRating = (currentOverallRating * currentRatingCount - previousUserRating + rating) / currentRatingCount;
-      } else {
-        newOverallRating = (currentOverallRating * currentRatingCount + rating) / (currentRatingCount + 1);
-        currentRatingCount += 1;
-      }
-
-      transaction.update(workerRef, {
-        'overallRating': newOverallRating,
-        'ratingCount': currentRatingCount,
-      });
-
-      transaction.set(userRatingRef, {
-        'rating': rating,
-      });
-    });
-
-    setState(() {});
+  void _submitRating(Map<String, dynamic> worker, double rating) {
+    ref
+        .read(workerControllerProvidere)
+        .workerRepository
+        .submitRating(worker, rating, widget.workerInf['workerId']![0]);
   }
-
-   
-//   void _submitRating(worker, double rating) async {
-//   // Ensure the worker reference path is correct
-//   DocumentReference workerRef = FirebaseFirestore.instance
-//       .collection('userDetails')
-//       .doc(worker['workType']) // Assuming worker has a field 'workType'
-//       .collection('Users')
-//       .doc(widget.workerInf['workerId']![0]); // Using worker.id directly
-
-//   try {
-//     // Run the transaction
-//     await FirebaseFirestore.instance.runTransaction((transaction) async {
-//       DocumentSnapshot snapshot = await transaction.get(workerRef);
-//       if (!snapshot.exists) {
-//         throw Exception("Worker does not exist!");
-//       }
-
-//       double currentRating = (snapshot['rating'] as num).toDouble();
-//       int currentRatingCount = snapshot['ratingCount'] as int;
-
-//       double newRating = (currentRating * currentRatingCount + rating) /
-//           (currentRatingCount + 1);
-//       int newRatingCount = currentRatingCount + 1;
-
-//       transaction.update(workerRef, {
-//         'rating': newRating,
-//         'ratingCount': newRatingCount,
-//       });
-
-//     });
-
-//     setState(() {}); // Refresh the UI
-//   } catch (e) {
-//     print("Failed to update rating: $e");
-//   }
-// }
- 
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +141,6 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            // Display the user data
             Map<String, dynamic> worker = snapshot.data as Map<String, dynamic>;
             workerData = worker;
             return Padding(
@@ -265,14 +180,9 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                                       fontWeight: FontWeight.w600),
                                 ),
                                 SmoothStarRating(
-                                    allowHalfRating: true,
-                                    onRatingChanged: (v) {
-                                      setState(() {
-                                        rating = v;
-                                      });
-                                    },
+                                    allowHalfRating: false,
                                     starCount: 5,
-                                    rating: rating,
+                                    rating: worker['overallRating'],
                                     size: 20.0,
                                     filledIconData: Icons.star,
                                     halfFilledIconData:

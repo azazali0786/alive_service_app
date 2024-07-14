@@ -92,7 +92,7 @@ class _MainPageState extends ConsumerState<MainPage> {
   Widget getPage() {
     switch (currentPage) {
       case 'People':
-        return UserInformationPage(zoomDrawerController: zoomDrawerController);
+        return UserInformationPage();
       case 'Favourites':
         return const LoginPage();
       default:

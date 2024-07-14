@@ -38,9 +38,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         worker: workerData,
       ));
 
-    // case UserInformationPage.routeName:
-    //   return MaterialPageRoute(
-    //       builder: (context) => const UserInformationPage(zoomDrawerController: ,));
+    case UserInformationPage.routeName:
+      return MaterialPageRoute(
+          builder: (context) => const UserInformationPage());
 
     case OtpPage.routeName:
       final verificationId = settings.arguments as String;

@@ -71,7 +71,7 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
                   child: Row(
                     children: [
                       Container(
-                        height: 105,
+                        height: 105, 
                         width: 135,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),

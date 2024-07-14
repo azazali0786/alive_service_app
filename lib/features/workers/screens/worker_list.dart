@@ -25,6 +25,7 @@ class WorkerList extends ConsumerStatefulWidget {
 
 class WorkerListState extends ConsumerState<WorkerList> {
   Position? position;
+  bool sortByRating = false;
 
   @override
   void initState() {
@@ -112,7 +113,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
             },
           ),
         ],
-        title: const Text("Current Location"),
+        title: const Text("workers"),
       ),
       body: getBody(),
       floatingActionButton: FloatingActionButton(
@@ -127,7 +128,6 @@ class WorkerListState extends ConsumerState<WorkerList> {
 
   Widget getBody() {
     var size = MediaQuery.of(context).size;
-    // double rating = 3.0;
     return SingleChildScrollView(
       controller: scrollController,
       child: Padding(
@@ -142,27 +142,15 @@ class WorkerListState extends ConsumerState<WorkerList> {
                   "Rating..",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                Switch(value: false, onChanged: (onchange) {})
-              ],
-            ),
-            Container(
-              width: size.width,
-              height: 35,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: Colors.grey.withOpacity(0.25),
-              ),
-              child: TextField(
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: "Search Location",
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.grey.withOpacity(0.7),
-                  ),
-                  suffixIcon: const Icon(Icons.location_on),
+                Switch(
+                  value: sortByRating,
+                  onChanged: (onchange) {
+                    setState(() {
+                      sortByRating = onchange;
+                    });
+                  },
                 ),
-              ),
+              ],
             ),
             const SizedBox(
               height: 12,
@@ -197,6 +185,15 @@ class WorkerListState extends ConsumerState<WorkerList> {
 
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(child: Text('No data available'));
+                }
+
+                // Sort the data if sortByRating is true
+                if (sortByRating) {
+                  snapshot.data!.sort((a, b) {
+                    var ratingA = a['overallRating'] ?? 0.0;
+                    var ratingB = b['overallRating'] ?? 0.0;
+                    return ratingB.compareTo(ratingA);
+                  });
                 }
 
                 return Column(
@@ -255,8 +252,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
                                           worker['shopeName'],
                                           style: const TextStyle(
                                             fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                            fontWeight: FontWeight.bold),
                                         ),
                                         Text(
                                           '${widget.workType} ',
@@ -266,7 +262,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
                                           ),
                                         ),
                                         SmoothStarRating(
-                                          allowHalfRating: true,
+                                          allowHalfRating: false,
                                           onRatingChanged: null,  // Set to null to disable rating changes
                                           starCount: 5,
                                           rating: worker['overallRating'] ?? 0.0,
@@ -318,3 +314,4 @@ class WorkerListState extends ConsumerState<WorkerList> {
     );
   }
 }
+

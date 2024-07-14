@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:alive_service_app/features/workers/screens/callHistory_list.dart';
 import 'package:alive_service_app/features/workers/screens/work_list.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 
 class UserInformationPage extends StatefulWidget {
   static const routeName = "/user-information-screen";
-  final ZoomDrawerController zoomDrawerController;
 
-  const UserInformationPage({super.key, required this.zoomDrawerController});
+  const UserInformationPage({super.key});
 
   @override
   State<UserInformationPage> createState() => _UserInformationPageState();

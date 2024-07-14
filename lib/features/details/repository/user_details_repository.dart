@@ -174,7 +174,9 @@ class UserDetailsRepository {
           latitude: position.latitude,
           logitude: position.longitude,
           discription: discription,
-          phoneNumber: phoneNumber!);
+          phoneNumber: phoneNumber!,
+          overallRating: 0,
+          ratingCount: 0);
       await firestore
           .collection('userDetails')
           .doc(workType)

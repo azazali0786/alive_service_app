@@ -21,11 +21,8 @@ class WorkerController {
     return workerRepository.getQuery();
   }
 
-  void rateWorker(workerId, double rating) async {
-    return workerRepository.rateWorker(workerId, rating);
+  void submitRating(Map<String,dynamic> worker, double rating ,String workerId) async {
+    return workerRepository.submitRating(worker, rating, workerId);
   }
 
-  Future<void> updateRating(String workType, String workerId, double newRating) {
-    return workerRepository.updateRating(workType, workerId, newRating);
-  }
 }

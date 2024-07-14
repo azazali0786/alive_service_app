@@ -41,63 +41,55 @@ class WorkerRepository {
     }
   }
 
-  Future<void> rateWorker(String workerId, double rating) async {
-  try {
-    // Reference to your workers collection in Firestore
-    CollectionReference workersRef =
-        FirebaseFirestore.instance.collection('workers');
+  void submitRating(Map<String,dynamic> worker, double rating ,String workerId) async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+// widget.workerInf['workerId']![0]
+    DocumentReference workerRef = FirebaseFirestore.instance
+        .collection('userDetails')
+        .doc(worker['workType']) 
+        .collection('Users')
+        .doc(workerId);
 
-    // Get the current worker document
-    DocumentSnapshot workerSnapshot = await workersRef.doc(workerId).get();
+    DocumentReference userRatingRef = workerRef
+        .collection('ratings')
+        .doc(userId);
 
-    // Ensure worker data is of type Map<String, dynamic>
-    Map<String, dynamic>? workerData = workerSnapshot.data() as Map<String, dynamic>?;
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot workerSnapshot = await transaction.get(workerRef);
+      DocumentSnapshot userRatingSnapshot = await transaction.get(userRatingRef);
 
-    if (workerData != null) {
-      // Calculate new average rating
-      int currentRatingsCount = workerData['ratingsCount'] ?? 0;
-      double currentTotalRatings = workerData['totalRatings'] ?? 0.0;
+      if (!workerSnapshot.exists) {
+        throw Exception("Worker does not exist!");
+      }
 
-      // Increment ratings count and add new rating to total
-      int newRatingsCount = currentRatingsCount + 1;
-      double newTotalRatings = currentTotalRatings + rating;
+      double currentOverallRating = (workerSnapshot['overallRating'] as num).toDouble();
+      int currentRatingCount = workerSnapshot['ratingCount'] as int;
 
-      // Calculate new average rating
-      double newAverageRating = newTotalRatings / newRatingsCount;
+      double previousUserRating = 0.0;
+      if (userRatingSnapshot.exists) {
+        previousUserRating = (userRatingSnapshot['rating'] as num).toDouble();
+      }
 
-      // Update the worker's ratings fields
-      await workersRef.doc(workerId).update({
-        'rating': newAverageRating,
-        'ratingsCount': newRatingsCount,
-        'totalRatings': newTotalRatings,
+      double newOverallRating;
+      if (userRatingSnapshot.exists) {
+        newOverallRating = (currentOverallRating * currentRatingCount - previousUserRating + rating) / currentRatingCount;
+      } else {
+        newOverallRating = (currentOverallRating * currentRatingCount + rating) / (currentRatingCount + 1);
+        currentRatingCount += 1;
+      }
+
+      transaction.update(workerRef, {
+        'overallRating': newOverallRating,
+        'ratingCount': currentRatingCount,
       });
 
-      // Print success message
-      print('Worker rated successfully');
-    } else {
-      throw 'Worker data not found';
-    }
-  } catch (e) {
-    // Print any errors that occur
-    print('Error rating worker: $e');
-    // Optionally, throw the error or handle it in your UI
-    throw e;
+      transaction.set(userRatingRef, {
+        'rating': rating,
+      });
+    });
   }
-}
 
-Future<void> updateRating(String workType, String workerId, double newRating) async {
-    try {
-      await firestore
-          .collection('userDetails')
-          .doc(workType)
-          .collection('Users')
-          .doc(workerId)
-          .update({'rating': newRating});
-    } catch (e) {
-      print('Error updating rating: $e');
-      throw e; // Optionally, you can handle the error more gracefully
-    }
-  }
+
 
 
 

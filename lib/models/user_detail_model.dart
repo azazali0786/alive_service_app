@@ -1,6 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
-
 class UserDetail {
   final String mainImage;
   final List moreImage;
@@ -12,6 +9,8 @@ class UserDetail {
   final double logitude;
   final String discription;
   final String phoneNumber;
+  final double overallRating;
+  final int ratingCount;
   UserDetail(
       {required this.mainImage,
       required this.moreImage,
@@ -22,7 +21,9 @@ class UserDetail {
       required this.latitude,
       required this.logitude,
       required this.discription,
-      required this.phoneNumber});
+      required this.phoneNumber,
+      required this.overallRating,
+      required this.ratingCount});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -35,7 +36,9 @@ class UserDetail {
       'latitude': latitude,
       'logitude': logitude,
       'discription': discription,
-      'phoneNumber': phoneNumber
+      'phoneNumber': phoneNumber,
+      'overallRating': overallRating,
+      'ratingCount': ratingCount
     };
   }
 
@@ -50,23 +53,8 @@ class UserDetail {
         latitude: map['latitude'] as double,
         logitude: map['logitude'] as double,
         discription: map['discription'] as String,
-        phoneNumber: map['phoneNumber'] as String);
+        phoneNumber: map['phoneNumber'] as String,
+        overallRating: map['overallRating'] as double,
+        ratingCount: map['ratingCount'] as int);
   }
-
-  // static UserDetail fromSnap(DocumentSnapshot snap) {
-  //   Map<String, dynamic> snapshot = snap.data()! as Map<String, dynamic>;
-  //   return UserDetail(
-  //     mainImage: snapshot["mainImage"] ?? "",
-  //     moreImage: snapshot["moreImage"] ?? [],
-  //     shopeName: snapshot["shopeName"] ?? "",
-  //     workType: snapshot["workType"] ?? "",
-  //     timeIn: snapshot["timeIn"] ?? "",
-  //     timeOut: snapshot["timeOut"] ?? "",
-  //     latitude: snapshot["latitude"] ?? 0.0,
-  //     logitude: snapshot["longitude"] ?? 0.0,
-  //     discription: snapshot["discription"] ?? "",
-  //     phoneNumber: snapshot["phoneNumber"] ?? "",
-  //   );
-  // }
-
 }
