@@ -2,6 +2,7 @@ import 'package:alive_service_app/common/widgets/error.dart';
 import 'package:alive_service_app/features/auth/screens/login_page.dart';
 import 'package:alive_service_app/features/auth/screens/otp_page.dart';
 import 'package:alive_service_app/features/details/screens/user_detail_page.dart';
+import 'package:alive_service_app/features/drawer/screens/main_page.dart';
 import 'package:alive_service_app/features/workers/screens/worker_list.dart';
 import 'package:alive_service_app/features/workers/screens/worker_profile_screen.dart';
 import 'package:alive_service_app/user_information_page.dart';
@@ -11,6 +12,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case LoginPage.routeName:
       return MaterialPageRoute(builder: (context) => const LoginPage());
+
+    case MainPage.routeName:
+      return MaterialPageRoute(builder: (context) => const MainPage());
 
     case WorkerList.routeName:
       final workType = settings.arguments as String;
@@ -28,11 +32,11 @@ Route<dynamic> generateRoute(RouteSettings settings) {
               ));        
 
     case UserDetailPage.routeName:
-    final workerData = settings.arguments as Map<String, dynamic>;
-    String currentUser = 'false';
-    if(workerData.isNotEmpty){
-      currentUser= 'true';
-    }
+      final workerData = settings.arguments as Map<String, dynamic>;
+      String currentUser = 'false';
+      if(workerData.isNotEmpty){
+        currentUser= 'true';
+      }
       return MaterialPageRoute(builder: (context) => UserDetailPage(
         currentUser: currentUser,
         worker: workerData,

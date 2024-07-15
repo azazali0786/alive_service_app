@@ -1,20 +1,19 @@
 import 'dart:convert';
 
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class CallDetail {
   final String mainImage;
   final String shopName;
   final String workerId;
   final String workType;
-  final String timeIn;
-  final String date;
+  final Timestamp timestamp;
   CallDetail({
     required this.mainImage,
     required this.shopName,
     required this.workerId,
     required this.workType,
-    required this.timeIn,
-    required this.date,
+    required this.timestamp
   });
 
   Map<String, dynamic> toMap() {
@@ -23,8 +22,7 @@ class CallDetail {
       'shopName': shopName,
       'workerId': workerId,
       'workType': workType,
-      'timeIn': timeIn,
-      'date': date,
+      'timestamp': timestamp
     };
   }
 
@@ -34,15 +32,12 @@ class CallDetail {
       shopName: map['shopName'] as String,
       workerId: map['workerId'] as String,
       workType: map['workType'] as String,
-      timeIn: map['timeIn'] as String,
-      date: map['date'] as String,
+      timestamp: map['timestamp'] as Timestamp
     );
   }
 
-  // String toJson() => json.encode(toMap());
-  // factory CallDetail.fromJson(String source) => CallDetail.fromMap(json.decode(source) as Map<String, dynamic>);
-
   String toJson() => json.encode(toMap());
 
-  factory CallDetail.fromJson(String source) => CallDetail.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory CallDetail.fromJson(String source) =>
+      CallDetail.fromMap(json.decode(source) as Map<String, dynamic>);
 }

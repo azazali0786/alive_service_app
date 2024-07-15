@@ -398,6 +398,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.7"
+  flutter_spinkit:
+    dependency: "direct main"
+    description:
+      name: flutter_spinkit
+      sha256: d2696eed13732831414595b98863260e33e8882fc069ee80ec35d4ac9ddb0472
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -600,6 +608,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  insta_image_viewer:
+    dependency: "direct main"
+    description:
+      name: insta_image_viewer
+      sha256: "5c3150415d19945ee7eb9a986ed636219e384164e53a4854e8c6f3dbb3b3e197"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   intl:
     dependency: "direct main"
     description:

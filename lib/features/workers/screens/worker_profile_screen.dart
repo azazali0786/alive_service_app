@@ -1,8 +1,12 @@
+import 'package:alive_service_app/common/utils/utils.dart';
+import 'package:alive_service_app/features/details/controller/user_details_controller.dart';
 import 'package:alive_service_app/features/details/screens/user_detail_page.dart';
 import 'package:alive_service_app/features/workers/controller/workerController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:insta_image_viewer/insta_image_viewer.dart';
 import 'package:smooth_star_rating_nsafe/smooth_star_rating.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -69,11 +73,39 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
     );
   }
 
+  Future<String> getLocation(String lati, String logi) async {
+    List<Placemark> placemarks = await ref
+        .read(userDetailsControllerProvider)
+        .getAddressFromLatLong(lati, logi);
+
+    if (placemarks.isNotEmpty) {
+      Placemark firstPlacemark = placemarks.first;
+      String address =
+          "${firstPlacemark.subLocality}, ${firstPlacemark.locality}, ${firstPlacemark.street}, ${firstPlacemark.administrativeArea}";
+
+      return address;
+    } else {
+      return "No address found";
+    }
+  }
+
   void _submitRating(Map<String, dynamic> worker, double rating) {
     ref
         .read(workerControllerProvidere)
         .workerRepository
         .submitRating(worker, rating, widget.workerInf['workerId']![0]);
+  }
+
+  void getCall(Map<String, dynamic> worker, String workerId) {
+    ref
+        .read(workerControllerProvidere)
+        .workerRepository
+        .call(worker['phoneNumber']);
+    ref.read(workerControllerProvidere).setCallHistory((error) {
+      if (mounted) {
+        showSnackBar(context: context, content: error);
+      }
+    }, worker['mainImage'], workerId, worker['shopeName'], worker['workType']);
   }
 
   @override
@@ -142,6 +174,9 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
             return Text('Error: ${snapshot.error}');
           } else {
             Map<String, dynamic> worker = snapshot.data as Map<String, dynamic>;
+            var geopoint = worker['position']['geopoint'];
+            var addressFuture = getLocation(
+                geopoint.latitude.toString(), geopoint.longitude.toString());
             workerData = worker;
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -153,16 +188,13 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                         radius: 70,
                         backgroundImage: NetworkImage(worker['mainImage']),
                       ),
-                      Positioned(
-                          right: size.width * 0.5,
-                          top: 12,
-                          child: Text(
-                            worker['shopeName'],
-                            style: const TextStyle(
-                                fontSize: 26,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white),
-                          )),
+                      Text(
+                        worker['shopeName'],
+                        style: const TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black),
+                      ),
                     ]),
                     SizedBox(
                       height: size.height * 0.02,
@@ -174,7 +206,7 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                             Row(
                               children: [
                                 Text(
-                                  '${worker['workType']}  ',
+                                  '${worker['workType']} ',
                                   style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w600),
@@ -192,10 +224,28 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                                     spacing: 0.0),
                               ],
                             ),
-                            const Align(
-                                alignment: Alignment.bottomLeft,
-                                child: Text(
-                                    '    Rafiqabad caloni dasna ,Ghaziabad')),
+                            FutureBuilder<String>(
+                              future: addressFuture,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Text('Loading address...');
+                                } else if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else {
+                                  return SizedBox(
+                                    width: size.width * 0.65,
+                                    child: Text(
+                                      snapshot.data!,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
                           ],
                         ),
                         SizedBox(
@@ -203,7 +253,11 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                         ),
                         widget.currentUser == 'false'
                             ? IconButton(
-                                onPressed: () {}, icon: const Icon(Icons.call))
+                                onPressed: () {
+                                  getCall(
+                                      worker, widget.workerInf['workerId']![0]);
+                                },
+                                icon: const Icon(Icons.call))
                             : const SizedBox()
                       ],
                     ),
@@ -224,13 +278,15 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                                   return ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
                                     child: Stack(children: [
-                                      Container(
-                                          width: 100,
-                                          color: Colors.red,
-                                          child: Image.network(
-                                            worker['moreImage'][index],
-                                            fit: BoxFit.cover,
-                                          )),
+                                      InstaImageViewer(
+                                        child: Container(
+                                            width: 100,
+                                            color: Colors.red,
+                                            child: Image.network(
+                                              worker['moreImage'][index],
+                                              fit: BoxFit.cover,
+                                            )),
+                                      ),
                                       Positioned(
                                           top: 0,
                                           right: 0,
@@ -251,9 +307,9 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                     SizedBox(
                       height: size.height * 0.03,
                     ),
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
+                      children: [
                         Text(
                           '  TimeIn',
                           style: TextStyle(
@@ -296,18 +352,16 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  '  Discription',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                              Text(
+                                '  Discription',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
-                                height: size.height * 0.01,
+                                height: size.height * 0.005,
                               ),
                               Text(
                                 '  ${worker['discription']}',
@@ -319,35 +373,37 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                     SizedBox(
                       height: size.height * 0.04,
                     ),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        '  Give rating',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              _showRatingDialog(context, worker);
-                            },
-                            icon: const Icon(Icons.star)),
-                        widget.currentUser == 'false'
-                            ? IconButton(
-                                onPressed: () {
-                                  launchUrl(Uri.parse(
-                                      'https://wa.me/${worker['phoneNumber']}'));
-                                },
-                                icon: const Icon(
-                                  Icons.whatshot,
-                                  color: Colors.green,
-                                ))
-                            : const SizedBox()
-                      ],
-                    ),
+                    widget.currentUser == 'false'
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                children: [
+                                  const Text(
+                                    '  Give rating',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  IconButton(
+                                      onPressed: () {
+                                        _showRatingDialog(context, worker);
+                                      },
+                                      icon: const Icon(Icons.star)),
+                                ],
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    launchUrl(Uri.parse(
+                                        'https://wa.me/${worker['phoneNumber']}'));
+                                  },
+                                  icon: const Icon(
+                                    Icons.whatshot,
+                                    color: Colors.green,
+                                  ))
+                            ],
+                          )
+                        : const SizedBox(),
                     SizedBox(
                       height: size.height * 0.03,
                     ),

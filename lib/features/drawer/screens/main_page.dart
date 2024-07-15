@@ -1,14 +1,16 @@
-import 'package:alive_service_app/features/auth/screens/login_page.dart';
 import 'package:alive_service_app/features/auth/screens/otp_page.dart';
 import 'package:alive_service_app/features/drawer/controller/drawer_controller.dart';
+import 'package:alive_service_app/features/drawer/screens/about.dart';
 import 'package:alive_service_app/features/drawer/screens/menu_page.dart';
 import 'package:alive_service_app/features/workers/screens/appBar.dart';
+import 'package:alive_service_app/features/workers/screens/callHistory_list.dart';
 import 'package:alive_service_app/user_information_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 
 class MainPage extends ConsumerStatefulWidget {
+  static const routeName = "/main-page";
   const MainPage({super.key});
 
   @override
@@ -17,19 +19,21 @@ class MainPage extends ConsumerStatefulWidget {
 
 class _MainPageState extends ConsumerState<MainPage> {
   Map<String, List<String>> userIdWorkType = {};
+  final ZoomDrawerController zoomDrawerController = ZoomDrawerController();
+  String currentPage = 'Home';
 
   @override
   void initState() {
-    userWorkData();
     super.initState();
+    _getUserWorkData();
   }
 
-  void userWorkData() async {
+  Future<void> _getUserWorkData() async {
     userIdWorkType = await ref.read(drawerControllerProvider).userWorkData();
     setState(() {});
   }
 
-  Future<bool?> showWarning(BuildContext context) async {
+  Future<bool?> _showWarning(BuildContext context) async {
     return await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -51,15 +55,12 @@ class _MainPageState extends ConsumerState<MainPage> {
     );
   }
 
-  final ZoomDrawerController zoomDrawerController = ZoomDrawerController();
-  String currentPage = 'People';
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        final shouldPop = await showWarning(context);
-        return shouldPop ?? false;
+        final shouldExit = await _showWarning(context);
+        return shouldExit??false;
       },
       child: ZoomDrawer(
         controller: zoomDrawerController,
@@ -91,10 +92,12 @@ class _MainPageState extends ConsumerState<MainPage> {
 
   Widget getPage() {
     switch (currentPage) {
-      case 'People':
-        return UserInformationPage();
-      case 'Favourites':
-        return const LoginPage();
+      case 'Home':
+        return const UserInformationPage();
+      case 'History':
+        return const CallhistoryList();
+      case 'About':
+        return const AboutPage();
       default:
         return const OtpPage(verificationId: 'verificationId');
     }

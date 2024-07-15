@@ -23,4 +23,8 @@ class AuthController {
     authRepository.verifyOTP(
         context: context, verificationId: verificationId, userOTP: userOTP);
   }
+
+  void signOut(BuildContext context) {
+    authRepository.signOut(context);
+  }
 }

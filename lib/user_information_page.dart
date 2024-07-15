@@ -1,4 +1,4 @@
-import 'package:alive_service_app/features/auth/screens/login_page.dart';
+import 'package:alive_service_app/features/workers/screens/appBar.dart';
 import 'package:flutter/material.dart';
 import 'package:alive_service_app/features/workers/screens/callHistory_list.dart';
 import 'package:alive_service_app/features/workers/screens/work_list.dart';
@@ -38,10 +38,9 @@ class _UserInformationPageState extends State<UserInformationPage> {
           onPageChanged: (index) {
             setState(() => _currentIndex = index);
           },
-          children: <Widget>[
+          children: const <Widget>[
             WorkList(),
-            const CallhistoryList(),
-            const LoginPage(),
+            CallhistoryList(),
           ],
         ),
       ),
@@ -51,7 +50,6 @@ class _UserInformationPageState extends State<UserInformationPage> {
         items: const <Widget>[
           Icon(Icons.home, size: 30, color: Colors.white),
           Icon(Icons.history, size: 30, color: Colors.white),
-          Icon(Icons.login, size: 30, color: Colors.white),
         ],
         color: Colors.blue,
         buttonBackgroundColor: Colors.blue,

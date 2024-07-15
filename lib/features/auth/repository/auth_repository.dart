@@ -1,16 +1,20 @@
 import 'package:alive_service_app/common/utils/utils.dart';
+import 'package:alive_service_app/features/auth/screens/login_page.dart';
 import 'package:alive_service_app/features/auth/screens/otp_page.dart';
-import 'package:alive_service_app/user_information_page.dart';
+import 'package:alive_service_app/features/drawer/screens/main_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final authRepositoryProvider = Provider((ref) => AuthRepository(
-    auth: FirebaseAuth.instance, ));
+      auth: FirebaseAuth.instance,
+    ));
 
 class AuthRepository {
   final FirebaseAuth auth;
-  AuthRepository({required this.auth, });
+  AuthRepository({
+    required this.auth,
+  });
 
   void signInWithPhone(BuildContext context, String phoneNumber) async {
     try {
@@ -47,13 +51,24 @@ class AuthRepository {
         smsCode: userOTP,
       );
       await auth.signInWithCredential(credential);
-      if(context.mounted)
-      {
+      if (context.mounted) {
         Navigator.pushNamedAndRemoveUntil(
-          context, UserInformationPage.routeName, (route) => false);
-          }
+            context, MainPage.routeName, (route) => false);
+      }
     } on FirebaseAuthException catch (e) {
-      showSnackBar(context: context, content: e.message!);
+      if(context.mounted){
+       showSnackBar(context: context, content: e.message!);
+      }
+    }
+  }
+
+  void signOut(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushNamedAndRemoveUntil(
+            context,LoginPage.routeName, (route) => false);
+    } catch (e) {
+      showSnackBar(context: context, content: e.toString());
     }
   }
 }

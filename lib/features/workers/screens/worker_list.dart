@@ -1,3 +1,4 @@
+import 'package:alive_service_app/common/utils/utils.dart';
 import 'package:alive_service_app/features/details/controller/user_details_controller.dart';
 import 'package:alive_service_app/features/workers/controller/workerController.dart';
 import 'package:alive_service_app/features/workers/screens/worker_profile_screen.dart';
@@ -8,7 +9,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:smooth_star_rating_nsafe/smooth_star_rating.dart';
-import 'package:intl/intl.dart';
 
 class WorkerList extends ConsumerStatefulWidget {
   final String workType;
@@ -36,25 +36,22 @@ class WorkerListState extends ConsumerState<WorkerList> {
   ScrollController scrollController = ScrollController();
 
   void getCall(Map<String, dynamic> worker, String workerId) {
-    var date = DateFormat.yMd().format(DateTime.now());
-    var timeIn = DateFormat.jm().format(DateTime.now());
     ref
         .read(workerControllerProvidere)
         .workerRepository
         .call(worker['phoneNumber']);
-    ref.read(workerControllerProvidere).workerRepository.setCallHistory(
-          context: context,
-          mainImage: worker['mainImage'],
-          workerId: workerId,
-          shopeName: worker['shopeName'],
-          workType: worker['workType'],
-          timeIn: timeIn,
-          date: date,
-        );
+    ref
+        .read(workerControllerProvidere)
+        .setCallHistory((error) {
+      if (mounted) {
+        showSnackBar(context: context, content: error);
+      }
+    }, worker['mainImage'], workerId, worker['shopeName'], worker['workType']);
   }
 
   void getPosition() async {
-    position = await ref.read(userDetailsControllerProvider).getCurrentLocation();
+    position =
+        await ref.read(userDetailsControllerProvider).getCurrentLocation();
     setState(() {});
   }
 
@@ -66,7 +63,8 @@ class WorkerListState extends ConsumerState<WorkerList> {
     if (placemarks.isNotEmpty) {
       Placemark firstPlacemark = placemarks.first;
 
-      String address = "${firstPlacemark.subLocality}, ${firstPlacemark.locality}";
+      String address =
+          "${firstPlacemark.subLocality}, ${firstPlacemark.locality}";
 
       return address;
     } else {
@@ -174,7 +172,8 @@ class WorkerListState extends ConsumerState<WorkerList> {
                     field: 'position',
                     strictMode: true,
                   ),
-              builder: (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
+              builder:
+                  (context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
                 if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 }
@@ -198,7 +197,8 @@ class WorkerListState extends ConsumerState<WorkerList> {
 
                 return Column(
                   children: List.generate(snapshot.data!.length, (index) {
-                    final worker = snapshot.data![index].data() as Map<String, dynamic>;
+                    final worker =
+                        snapshot.data![index].data() as Map<String, dynamic>;
                     var geopoint = worker['position']['geopoint'];
 
                     return FutureBuilder<String>(
@@ -206,10 +206,12 @@ class WorkerListState extends ConsumerState<WorkerList> {
                         geopoint.latitude.toString(),
                         geopoint.longitude.toString(),
                       ),
-                      builder: (context, AsyncSnapshot<String> addressSnapshot) {
+                      builder:
+                          (context, AsyncSnapshot<String> addressSnapshot) {
                         if (addressSnapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         } else if (addressSnapshot.hasError) {
                           return Text('Error: ${addressSnapshot.error}');
                         } else if (!addressSnapshot.hasData) {
@@ -237,7 +239,8 @@ class WorkerListState extends ConsumerState<WorkerList> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
                                       image: DecorationImage(
-                                        image: NetworkImage(worker['mainImage']),
+                                        image:
+                                            NetworkImage(worker['mainImage']),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -246,13 +249,14 @@ class WorkerListState extends ConsumerState<WorkerList> {
                                   SizedBox(
                                     width: size.width * 0.35,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           worker['shopeName'],
                                           style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold),
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                         Text(
                                           '${widget.workType} ',
@@ -263,12 +267,15 @@ class WorkerListState extends ConsumerState<WorkerList> {
                                         ),
                                         SmoothStarRating(
                                           allowHalfRating: false,
-                                          onRatingChanged: null,  // Set to null to disable rating changes
+                                          onRatingChanged:
+                                              null, // Set to null to disable rating changes
                                           starCount: 5,
-                                          rating: worker['overallRating'] ?? 0.0,
+                                          rating:
+                                              worker['overallRating'] ?? 0.0,
                                           size: 20.0,
                                           filledIconData: Icons.star,
-                                          halfFilledIconData: Icons.star_half_outlined,
+                                          halfFilledIconData:
+                                              Icons.star_half_outlined,
                                           color: Colors.green,
                                           borderColor: Colors.green,
                                           spacing: 0.0,
@@ -314,4 +321,3 @@ class WorkerListState extends ConsumerState<WorkerList> {
     );
   }
 }
-

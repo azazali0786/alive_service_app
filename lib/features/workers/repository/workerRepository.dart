@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:uuid/uuid.dart';
- 
+
 final workerRepositoryProvider = Provider((ref) {
   return WorkerRepository(
       firebaseStorage: FirebaseStorage.instance,
@@ -41,28 +41,30 @@ class WorkerRepository {
     }
   }
 
-  void submitRating(Map<String,dynamic> worker, double rating ,String workerId) async {
+  void submitRating(
+      Map<String, dynamic> worker, double rating, String workerId) async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 // widget.workerInf['workerId']![0]
     DocumentReference workerRef = FirebaseFirestore.instance
         .collection('userDetails')
-        .doc(worker['workType']) 
+        .doc(worker['workType'])
         .collection('Users')
         .doc(workerId);
 
-    DocumentReference userRatingRef = workerRef
-        .collection('ratings')
-        .doc(userId);
+    DocumentReference userRatingRef =
+        workerRef.collection('ratings').doc(userId);
 
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       DocumentSnapshot workerSnapshot = await transaction.get(workerRef);
-      DocumentSnapshot userRatingSnapshot = await transaction.get(userRatingRef);
+      DocumentSnapshot userRatingSnapshot =
+          await transaction.get(userRatingRef);
 
       if (!workerSnapshot.exists) {
         throw Exception("Worker does not exist!");
       }
 
-      double currentOverallRating = (workerSnapshot['overallRating'] as num).toDouble();
+      double currentOverallRating =
+          (workerSnapshot['overallRating'] as num).toDouble();
       int currentRatingCount = workerSnapshot['ratingCount'] as int;
 
       double previousUserRating = 0.0;
@@ -72,9 +74,14 @@ class WorkerRepository {
 
       double newOverallRating;
       if (userRatingSnapshot.exists) {
-        newOverallRating = (currentOverallRating * currentRatingCount - previousUserRating + rating) / currentRatingCount;
+        newOverallRating = (currentOverallRating * currentRatingCount -
+                previousUserRating +
+                rating) /
+            currentRatingCount;
       } else {
-        newOverallRating = (currentOverallRating * currentRatingCount + rating) / (currentRatingCount + 1);
+        newOverallRating =
+            (currentOverallRating * currentRatingCount + rating) /
+                (currentRatingCount + 1);
         currentRatingCount += 1;
       }
 
@@ -89,15 +96,12 @@ class WorkerRepository {
     });
   }
 
-
-
-
-
   Stream<QuerySnapshot> getQuery() {
     return firestore
         .collection('callDetails')
         .doc(auth.currentUser!.uid)
-        .collection('callHistory').orderBy('date', descending: false)
+        .collection('callHistory')
+        .orderBy('timestamp', descending: true)
         .snapshots();
   }
 
@@ -105,14 +109,12 @@ class WorkerRepository {
     await FlutterPhoneDirectCaller.callNumber(number);
   }
 
-  void setCallHistory({
-    required BuildContext context,
+  void setCallHistor({
+    required Function(String) onError,
     required String mainImage,
     required String workerId,
     required String shopeName,
     required String workType,
-    required String timeIn,
-    required String date,
   }) async {
     try {
       var uniqueId = const Uuid().v4();
@@ -121,8 +123,7 @@ class WorkerRepository {
           shopName: shopeName,
           workerId: workerId,
           workType: workType,
-          timeIn: timeIn,
-          date: date);
+          timestamp: Timestamp.now());
       await firestore
           .collection('callDetails')
           .doc(auth.currentUser!.uid)
@@ -130,7 +131,7 @@ class WorkerRepository {
           .doc(uniqueId)
           .set(callDetail.toMap());
     } catch (e) {
-      showSnackBar(context: context, content: e.toString());
+      onError(e.toString());
     }
   }
 }

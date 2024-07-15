@@ -149,42 +149,5 @@ class _OtpPageState extends ConsumerState<OtpPage> {
     );
   }
 
-  // verify otp
-  // void verifyOtp(BuildContext context, String userOtp) {
-  //   final ap = Provider.of<AuthProvider>(context, listen: false);
-  //   ap.verifyOtp(
-  //     context: context,
-  //     verificationId: widget.verificationId,
-  //     userOtp: userOtp,
-  //     onSuccess: () {
-  //       // checking whether user exists in the db
-  //       ap.checkExistingUser().then(
-  //         (value) async {
-  //           if (value == true) {
-  //           //   // user exists in our app
-  //           //   ap.getDataFromFirestore().then(
-  //           //         (value) => ap.saveUserDataToSP().then(
-  //           //               (value) => ap.setSignIn().then(
-  //           //                     (value) => Navigator.pushAndRemoveUntil(
-  //           //                         context,
-  //           //                         MaterialPageRoute(
-  //           //                           builder: (context) => const HomeScreen(),
-  //           //                         ),
-  //           //                         (route) => false),
-  //           //                   ),
-  //           //             ),
-  //           //       );
-  //           // } else {
-  //           //   // new user
-  //           //   Navigator.pushAndRemoveUntil(
-  //           //       context,
-  //           //       MaterialPageRoute(
-  //           //           builder: (context) => const UserInfromationScreen()),
-  //           //       (route) => false);
-  //           // }
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
+  
 }

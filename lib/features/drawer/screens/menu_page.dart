@@ -1,26 +1,56 @@
+import 'package:alive_service_app/features/auth/controller/auth_controller.dart';
 import 'package:alive_service_app/features/details/screens/user_detail_page.dart';
 import 'package:alive_service_app/features/workers/screens/worker_profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MenuPage extends StatefulWidget {
+class MenuPage extends ConsumerStatefulWidget {
   final Map<String, List<String>> userIdWorkType;
   final String currentPage;
   final ValueChanged<String> onSelectedPage;
   const MenuPage({
     super.key,
     required this.userIdWorkType,
-    required this.currentPage, //stateless honi chahiye
+    required this.currentPage,
     required this.onSelectedPage,
   });
 
   @override
-  State<MenuPage> createState() => _MenuPageState();
+  ConsumerState<MenuPage> createState() => _MenuPageState();
 }
 
-class _MenuPageState extends State<MenuPage> {
+class _MenuPageState extends ConsumerState<MenuPage> {
+  void signOut() {
+    print('object');
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Alert"),
+            content: const Text("Do you really want to Logout."),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('No')),
+              TextButton(
+                  onPressed: () {
+                    ref
+                        .read(authControllerProvider)
+                        .authRepository
+                        .signOut(context);
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Yes')),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
-    print('object');
+    var size = MediaQuery.of(context).size;
     String currentPage = widget.currentPage;
     final name = widget.userIdWorkType['userData']?[1] ?? "NoUser";
     final email = widget.userIdWorkType['userData']?[2] ?? "Please Loging";
@@ -36,7 +66,7 @@ class _MenuPageState extends State<MenuPage> {
               name: name,
               email: email,
               onClicked: () {
-                if (widget.userIdWorkType['userId'] != null) { 
+                if (widget.userIdWorkType['userId'] != null) {
                   Navigator.pushNamed(context, WorkerProfileScreen.routeName,
                       arguments: {
                         'workType': widget.userIdWorkType['workTypes']!,
@@ -50,57 +80,52 @@ class _MenuPageState extends State<MenuPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  const SizedBox(height: 12),
+                  SizedBox(height: size.height * 0.02),
                   ElevatedButton.icon(
                     onPressed: () {
-                      Map<String, dynamic> worker={};
-                      Navigator.pushNamed(context, UserDetailPage.routeName,arguments: worker);
+                      Map<String, dynamic> worker = {};
+                      Navigator.pushNamed(context, UserDetailPage.routeName,
+                          arguments: worker);
                     },
                     icon: const Icon(Icons.settings),
                     label: const Text('Add your Work'),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: size.height * 0.07),
                   buildMenuItem(
-                    text: 'People',
-                    icon: Icons.people,
+                    text: 'Home',
+                    icon: Icons.home,
                     onClicked: () {
-                      widget.onSelectedPage('People');
-                      currentPage = 'People';
+                      widget.onSelectedPage('Home');
+                      currentPage = 'Home';
                     },
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: size.height * 0.02),
                   buildMenuItem(
-                      text: 'Favourites',
-                      icon: Icons.favorite_border,
-                      onClicked: () {
-                        widget.onSelectedPage('Favourites');
-                        currentPage = 'Favourites';
-                      }),
-                  const SizedBox(height: 16),
-                  buildMenuItem(
-                    text: 'Workflow',
-                    icon: Icons.workspaces_outline,
-                    onClicked: () => {},
+                    text: 'History',
+                    icon: Icons.history,
+                    onClicked: () {
+                      widget.onSelectedPage('History');
+                      currentPage = 'History';
+                    },
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: size.height * 0.02),
                   buildMenuItem(
                     text: 'About',
                     icon: Icons.warning_amber_rounded,
-                    onClicked: () => {},
+                    onClicked: () {
+                      widget.onSelectedPage('About');
+                      currentPage = 'About';
+                    },
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: size.height * 0.02),
                   const Divider(color: Colors.white70),
-                  const SizedBox(height: 24),
+                  SizedBox(height: size.height * 0.05),
                   buildMenuItem(
-                    text: 'Plugins',
-                    icon: Icons.account_tree_outlined,
-                    onClicked: () => {},
-                  ),
-                  const SizedBox(height: 16),
-                  buildMenuItem(
-                    text: 'Notifications',
-                    icon: Icons.notifications_outlined,
-                    onClicked: () => {},
+                    text: 'Logout',
+                    icon: Icons.logout_outlined,
+                    onClicked: () {
+                      signOut();
+                    },
                   ),
                 ],
               ),
