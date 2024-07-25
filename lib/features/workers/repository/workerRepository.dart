@@ -1,6 +1,4 @@
-import 'package:alive_service_app/common/utils/utils.dart';
 import 'package:alive_service_app/models/call_details_model.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

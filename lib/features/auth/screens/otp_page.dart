@@ -27,7 +27,7 @@ class _OtpPageState extends ConsumerState<OtpPage> {
   @override
   Widget build(BuildContext context) {
     // final isLoading =
-    //     Provider.of<AuthProvider>(context, listen: true).isLoading;
+        // Provider.of<AuthProvider>(context, listen: true).isLoading;
     return Scaffold(
       body: SafeArea(
         child:
@@ -46,7 +46,7 @@ class _OtpPageState extends ConsumerState<OtpPage> {
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
-                    child: GestureDetector(
+                    child: GestureDetector( 
                       onTap: () => Navigator.of(context).pop(),
                       child: const Icon(Icons.arrow_back),
                     ),

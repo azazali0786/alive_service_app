@@ -170,7 +170,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   size: 20,
                                 ),
                               )
-                            : null,
+                            : null, 
                       ),
                     ),
                     const SizedBox(height: 20),

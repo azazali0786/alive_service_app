@@ -22,7 +22,7 @@ class AliveApp extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Alive_App',
-      home: const SplashScreen(), // Set SplashScreen as the initial route
+      home: const SplashScreen(), 
       onGenerateRoute: (settings) => generateRoute(settings),
     );
   }

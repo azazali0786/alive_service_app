@@ -1,6 +1,7 @@
 import 'package:alive_service_app/common/utils/utils.dart';
 import 'package:alive_service_app/features/details/controller/user_details_controller.dart';
 import 'package:alive_service_app/features/details/screens/user_detail_page.dart';
+import 'package:alive_service_app/features/drawer/controller/drawer_controller.dart';
 import 'package:alive_service_app/features/workers/controller/workerController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -26,11 +27,18 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
   Map<String, dynamic> workerData = {};
   String workType = '';
   double rating = 0;
+  Map<String, List<String>> userIdWorkType = {};
+  late Future<void> _fetchUserWorkData;
 
   @override
   void initState() {
     workType = widget.workerInf['workType']![0];
+    _fetchUserWorkData = _fetchUserWorkDataAsync();
     super.initState();
+  }
+
+  Future<void> _fetchUserWorkDataAsync() async {
+    userIdWorkType = await ref.read(drawerControllerProvider).userWorkData();
   }
 
   void _showRatingDialog(BuildContext context, worker) {
@@ -127,39 +135,50 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                 : const SizedBox()
           ],
         ),
-        actions: [
-          widget.workerInf['workType']!.length != 1
-              ? PopupMenuButton(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: Row(
-                      children: [
-                        Text(
-                          workType,
-                          style: const TextStyle(fontSize: 18),
+         actions: [
+         widget.currentUser=='true'&& widget.workerInf['workType']!.length != 1? FutureBuilder<void>(
+            future: _fetchUserWorkData,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return const Icon(Icons.error);
+              } else {
+                return userIdWorkType['workTypes']!.length > 1
+                    ? PopupMenuButton(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 12),
+                          child: Row(
+                            children: [
+                              Text(
+                                workType,
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                              const Icon(
+                                Icons.arrow_drop_down,
+                                size: 40,
+                              ),
+                            ],
+                          ),
                         ),
-                        const Icon(
-                          Icons.arrow_drop_down,
-                          size: 40,
-                        ),
-                      ],
-                    ),
-                  ),
-                  itemBuilder: (BuildContext context) {
-                    return widget.workerInf['workType']!.map((String item) {
-                      return PopupMenuItem<String>(
-                        value: item,
-                        child: Text(item),
-                      );
-                    }).toList();
-                  },
-                  onSelected: (newValue) {
-                    setState(() {
-                      workType = newValue;
-                    });
-                  },
-                )
-              : const SizedBox(),
+                        itemBuilder: (BuildContext context) {
+                          return userIdWorkType['workTypes']!.map((String item) {
+                            return PopupMenuItem<String>(
+                              value: item,
+                              child: Text(item),
+                            );
+                          }).toList();
+                        },
+                        onSelected: (newValue) {
+                          setState(() {
+                            workType = newValue;
+                          });
+                        },
+                      )
+                    : const SizedBox();
+              }
+            },
+          ):const SizedBox()
         ],
       ),
       body: FutureBuilder(

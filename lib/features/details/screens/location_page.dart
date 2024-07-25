@@ -75,7 +75,7 @@ class _LocationPageState extends ConsumerState<LocationPage> {
         TextFormField(
           autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: pincodeController,
-          // readOnly: true,
+          readOnly: true,
           keyboardType: TextInputType.number,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),

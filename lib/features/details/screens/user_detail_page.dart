@@ -3,6 +3,7 @@ import 'package:alive_service_app/common/utils/utils.dart';
 import 'package:alive_service_app/features/details/controller/user_details_controller.dart';
 import 'package:alive_service_app/features/details/screens/location_page.dart';
 import 'package:alive_service_app/features/details/screens/timing_page.dart';
+import 'package:alive_service_app/features/drawer/screens/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -97,7 +98,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
           position!,
           discriptionController.text);
       showSnackBar(context: context, content: 'Form submitted successfully');
-      Navigator.pop(context);
+      Navigator.of(context).pop();
     } else if (_formKey.currentState!.validate() && mainImage == null) {
       return showSnackBar(context: context, content: 'Please pick image');
     }
@@ -132,8 +133,8 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                                   TextButton(
                                       onPressed: () {
                                         deleteUserData(workType.toString());
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).pop();
+                                        Navigator.pushNamedAndRemoveUntil(
+                                        context, MainPage.routeName, (route) => false);
                                       },
                                       child: const Text('Yes')),
                                 ],
@@ -400,23 +401,4 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
           );
         });
   }
-  // void getPerm() async {
-  //     final permissionStatus = await Permission.storage.status;
-  //     if (permissionStatus.isDenied) {
-  //       // Here just ask for the permission for the first time
-  //       await Permission.storage.request();
-
-  //       // I noticed that sometimes popup won't show after user press deny
-  //       // so I do the check once again but now go straight to appSettings
-  //       if (permissionStatus.isDenied) {
-  //         await openAppSettings();
-  //       }
-  //     } else if (permissionStatus.isPermanentlyDenied) {
-  //       // Here open app settings for user to manually enable permission in case
-  //       // where permission was permanently denied
-  //       await openAppSettings();
-  //     } else {
-  //       // Do stuff that require permission here
-  //     }
-  //   }
 }

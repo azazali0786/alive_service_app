@@ -1,16 +1,15 @@
 import 'package:alive_service_app/features/auth/controller/auth_controller.dart';
 import 'package:alive_service_app/features/details/screens/user_detail_page.dart';
+import 'package:alive_service_app/features/drawer/controller/drawer_controller.dart';
 import 'package:alive_service_app/features/workers/screens/worker_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MenuPage extends ConsumerStatefulWidget {
-  final Map<String, List<String>> userIdWorkType;
   final String currentPage;
   final ValueChanged<String> onSelectedPage;
   const MenuPage({
     super.key,
-    required this.userIdWorkType,
     required this.currentPage,
     required this.onSelectedPage,
   });
@@ -20,8 +19,20 @@ class MenuPage extends ConsumerStatefulWidget {
 }
 
 class _MenuPageState extends ConsumerState<MenuPage> {
+  Map<String, List<String>> userIdWorkType = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserWorkData();
+  }
+
+  Future<void> _fetchUserWorkData() async {
+    userIdWorkType = await ref.read(drawerControllerProvider).userWorkData();
+    setState(() {});
+  }
+
   void signOut() {
-    print('object');
     showDialog(
         context: context,
         builder: (context) {
@@ -52,10 +63,11 @@ class _MenuPageState extends ConsumerState<MenuPage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     String currentPage = widget.currentPage;
-    final name = widget.userIdWorkType['userData']?[1] ?? "NoUser";
-    final email = widget.userIdWorkType['userData']?[2] ?? "Please Loging";
-    final urlImage = widget.userIdWorkType['userData']?[0] ??
+    final name = userIdWorkType['userData']?[1] ?? "NoUser";
+    final email = userIdWorkType['userData']?[2] ?? "Please Loging";
+    final urlImage = userIdWorkType['userData']?[0] ??
         'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80';
+
     return Drawer(
       child: Material(
         color: const Color.fromARGB(255, 50, 205, 195),
@@ -65,15 +77,23 @@ class _MenuPageState extends ConsumerState<MenuPage> {
               urlImage: urlImage,
               name: name,
               email: email,
-              onClicked: () {
-                if (widget.userIdWorkType['userId'] != null) {
-                  Navigator.pushNamed(context, WorkerProfileScreen.routeName,
-                      arguments: {
-                        'workType': widget.userIdWorkType['workTypes']!,
-                        'workerId': [widget.userIdWorkType['userId']![0]],
-                        'currentUser': ['true']
-                      });
+              onClicked: () async {
+                if (userIdWorkType['userId'] != null) {
+                  await Navigator.pushNamed(
+                    context,
+                    WorkerProfileScreen.routeName,
+                    arguments: {
+                      'workType': userIdWorkType['workTypes']!,
+                      'workerId': [userIdWorkType['userId']![0]],
+                      'currentUser': ['true']
+                    },
+                  );
+                  // Refresh the user work data after navigating back
+                } else {
+                  Map<String, dynamic> worker = {};
+                  await Navigator.pushNamed(context, UserDetailPage.routeName,arguments: worker,);
                 }
+                  _fetchUserWorkData();
               },
             ),
             Container(
@@ -82,10 +102,15 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                 children: [
                   SizedBox(height: size.height * 0.02),
                   ElevatedButton.icon(
-                    onPressed: () {
+                    onPressed: () async {
                       Map<String, dynamic> worker = {};
-                      Navigator.pushNamed(context, UserDetailPage.routeName,
-                          arguments: worker);
+                      await Navigator.pushNamed(
+                        context,
+                        UserDetailPage.routeName,
+                        arguments: worker,
+                      );
+                      // Refresh the user work data after navigating back
+                      _fetchUserWorkData();
                     },
                     icon: const Icon(Icons.settings),
                     label: const Text('Add your Work'),

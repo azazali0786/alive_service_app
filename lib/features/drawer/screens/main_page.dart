@@ -1,5 +1,4 @@
 import 'package:alive_service_app/features/auth/screens/otp_page.dart';
-import 'package:alive_service_app/features/drawer/controller/drawer_controller.dart';
 import 'package:alive_service_app/features/drawer/screens/about.dart';
 import 'package:alive_service_app/features/drawer/screens/menu_page.dart';
 import 'package:alive_service_app/features/workers/screens/appBar.dart';
@@ -18,20 +17,8 @@ class MainPage extends ConsumerStatefulWidget {
 }
 
 class _MainPageState extends ConsumerState<MainPage> {
-  Map<String, List<String>> userIdWorkType = {};
   final ZoomDrawerController zoomDrawerController = ZoomDrawerController();
   String currentPage = 'Home';
-
-  @override
-  void initState() {
-    super.initState();
-    _getUserWorkData();
-  }
-
-  Future<void> _getUserWorkData() async {
-    userIdWorkType = await ref.read(drawerControllerProvider).userWorkData();
-    setState(() {});
-  }
 
   Future<bool?> _showWarning(BuildContext context) async {
     return await showDialog<bool>(
@@ -65,7 +52,6 @@ class _MainPageState extends ConsumerState<MainPage> {
       child: ZoomDrawer(
         controller: zoomDrawerController,
         menuScreen: MenuPage(
-          userIdWorkType: userIdWorkType,
           currentPage: currentPage,
           onSelectedPage: (pageName) {
             setState(() {
