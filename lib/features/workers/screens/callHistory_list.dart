@@ -20,15 +20,6 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: const [
-          Padding(
-            padding: EdgeInsets.all(15.0),
-            child: Icon(Icons.history),
-          ),
-        ],
-        title: const Text("Calls History"),
-      ),
       body: getBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -50,11 +41,11 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
       }
 
       if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Text('Loading...');
+        return const Center(child: Text('Loading...'));
       }
 
       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-        return const Text('No data available');
+        return const Center(child: Text('No data available'));
       }
 
       return ListView.builder(

@@ -30,6 +30,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
   Position? position;
   String? workType;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   List<Time> timeList =
       List<Time>.filled(2, Time(hour: 0, minute: 0, timeFormat: ''));
@@ -59,6 +60,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
   }
 
   void futureValueSet() async {
+    _isLoading = true;
     mainImage = await ref
         .read(userDetailsControllerProvider)
         .urlToFile(widget.worker['mainImage']);
@@ -67,7 +69,9 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
           await ref.read(userDetailsControllerProvider).urlToFile(image);
       imageFileList.add(XFile(fileImage.path));
     }
-    setState(() {});
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void deleteUserData(String work) {
@@ -88,17 +92,38 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
     if (_formKey.currentState!.validate() && timeList[0].timeFormat == '') {
       timingBottomSheet(context);
     } else if (_formKey.currentState!.validate() && mainImage != null) {
-      ref.read(userDetailsControllerProvider).saveUserDetailData(
-          context,
-          mainImage!,
-          imageFileList,
-          shopeNameController.text,
-          workType!,
-          timeList,
-          position!,
-          discriptionController.text);
-      showSnackBar(context: context, content: 'Form submitted successfully');
-      Navigator.of(context).pop();
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text("Alert"),
+              content: const Text(
+                  "Do you want to submit"),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('No')),
+                TextButton(
+                    onPressed: () {
+                      ref.read(userDetailsControllerProvider).saveUserDetailData(
+                          context,
+                          mainImage!,
+                          imageFileList,
+                          shopeNameController.text,
+                          workType!,
+                          timeList,
+                          position!,
+                          discriptionController.text);
+                      showSnackBar(context: context, content: 'Form submitted successfully');
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Yes')),
+              ],
+            );
+          });
     } else if (_formKey.currentState!.validate() && mainImage == null) {
       return showSnackBar(context: context, content: 'Please pick image');
     }
@@ -160,8 +185,15 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
             key: _formKey,
             child: Column(
               children: [
-                mainImage == null
-                    ? Stack(children: [
+                 mainImage != null
+                    ?InkWell(
+                            onTap: selectImage,
+                            child: CircleAvatar(
+                              radius: 70,
+                              backgroundImage: FileImage(mainImage!),
+                              backgroundColor: Colors.white,
+                            ),
+                          ):widget.currentUser=='true'? const CircularProgressIndicator():Stack(children: [
                         const CircleAvatar(
                           radius: 70,
                           backgroundImage: NetworkImage(
@@ -180,15 +212,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                             onPressed: () => selectImage(),
                           ),
                         ),
-                      ])
-                    : InkWell(
-                        onTap: selectImage,
-                        child: CircleAvatar(
-                          radius: 70,
-                          backgroundImage: FileImage(mainImage!),
-                          backgroundColor: Colors.white,
-                        ),
-                      ),
+                      ]),
                 SizedBox(
                   height: size.height * 0.02,
                 ),
@@ -247,7 +271,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                               );
                             }),
                       )
-                    : const SizedBox(
+                    : widget.currentUser=='true'?_isLoading==true?const CircularProgressIndicator():const SizedBox():const SizedBox(
                         height: 12,
                       ),
                 const SizedBox(
