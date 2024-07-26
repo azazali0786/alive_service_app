@@ -134,7 +134,9 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                                       onPressed: () {
                                         deleteUserData(workType.toString());
                                         Navigator.pushNamedAndRemoveUntil(
-                                        context, MainPage.routeName, (route) => false);
+                                            context,
+                                            MainPage.routeName,
+                                            (route) => false);
                                       },
                                       child: const Text('Yes')),
                                 ],

@@ -56,8 +56,8 @@ class AuthRepository {
             context, MainPage.routeName, (route) => false);
       }
     } on FirebaseAuthException catch (e) {
-      if(context.mounted){
-       showSnackBar(context: context, content: e.message!);
+      if (context.mounted) {
+        showSnackBar(context: context, content: e.message!);
       }
     }
   }
@@ -66,7 +66,7 @@ class AuthRepository {
     try {
       await FirebaseAuth.instance.signOut();
       Navigator.pushNamedAndRemoveUntil(
-            context,LoginPage.routeName, (route) => false);
+          context, LoginPage.routeName, (route) => false);
     } catch (e) {
       showSnackBar(context: context, content: e.toString());
     }

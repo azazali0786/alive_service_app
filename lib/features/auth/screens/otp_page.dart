@@ -1,5 +1,4 @@
 import 'package:alive_service_app/common/utils/utils.dart';
-import 'package:alive_service_app/common/widgets/custom_button.dart';
 import 'package:alive_service_app/features/auth/controller/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,6 +15,7 @@ class OtpPage extends ConsumerStatefulWidget {
 
 class _OtpPageState extends ConsumerState<OtpPage> {
   String? otpCode;
+  bool _isLoading = false;
   TextEditingController controller = TextEditingController();
 
   void verifyOTP(BuildContext context, String userOTP) {
@@ -27,7 +27,7 @@ class _OtpPageState extends ConsumerState<OtpPage> {
   @override
   Widget build(BuildContext context) {
     // final isLoading =
-        // Provider.of<AuthProvider>(context, listen: true).isLoading;
+    // Provider.of<AuthProvider>(context, listen: true).isLoading;
     return Scaffold(
       body: SafeArea(
         child:
@@ -44,13 +44,6 @@ class _OtpPageState extends ConsumerState<OtpPage> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: GestureDetector( 
-                      onTap: () => Navigator.of(context).pop(),
-                      child: const Icon(Icons.arrow_back),
-                    ),
-                  ),
                   Container(
                     width: 200,
                     height: 200,
@@ -107,17 +100,23 @@ class _OtpPageState extends ConsumerState<OtpPage> {
                     },
                   ),
                   const SizedBox(height: 25),
-                  SizedBox(
+                  _isLoading?const CircularProgressIndicator():SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: 50,
-                    child: CustomButton(
-                      text: "Verify",
+                    child: ElevatedButton(
+                      child: const Text('Verify'),
                       onPressed: () {
                         if (otpCode?.length == 6) {
+                          setState(() {
+                            _isLoading = true;
+                          });
                           verifyOTP(context, otpCode!);
                         } else {
                           showSnackBar(
                               context: context, content: "Enter 6-Digit code");
+                          setState(() {
+                            _isLoading = false;
+                          });
                         }
                       },
                     ),
@@ -132,12 +131,15 @@ class _OtpPageState extends ConsumerState<OtpPage> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  const Text(
-                    "Resend New Code",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.purple,
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: const Text(
+                      "Resend New Code",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.purple,
+                      ),
                     ),
                   ),
                 ],
@@ -148,6 +150,4 @@ class _OtpPageState extends ConsumerState<OtpPage> {
       ),
     );
   }
-
-  
 }

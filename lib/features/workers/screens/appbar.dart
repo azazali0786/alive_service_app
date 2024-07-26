@@ -69,12 +69,10 @@ class MySearchDelegate extends SearchDelegate {
       ];
 
   @override
-  Widget buildResults(BuildContext context) => Center(
-        child: Text(
-          query,
-          style: const TextStyle(fontSize: 64, fontWeight: FontWeight.bold),
-        ),
-      );
+  Widget buildResults(BuildContext context) {
+    // Do nothing here to prevent navigating when "Enter" is pressed on the keyboard.
+    return Container(); // Empty container as navigation is handled in the ListTile onTap.
+  }
 
   @override
   Widget buildSuggestions(BuildContext context) {
@@ -92,9 +90,17 @@ class MySearchDelegate extends SearchDelegate {
             title: Text(suggestion),
             onTap: () {
               query = suggestion;
-              Navigator.pushNamed(context, WorkerList.routeName, arguments: query);
+              _navigateToWorkerList(context, query);
             },
           );
         });
   }
+
+  void _navigateToWorkerList(BuildContext context, String query) {
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    Navigator.pushNamed(context, WorkerList.routeName, arguments: query);
+  }
+
+  @override
+  TextInputAction get textInputAction => TextInputAction.done; // Set the keyboard action
 }

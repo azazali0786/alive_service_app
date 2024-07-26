@@ -10,7 +10,10 @@ class LocationPage extends ConsumerStatefulWidget {
   final GlobalKey<FormState> formKey;
   final ValueChanged<Position> sendPostion;
   const LocationPage(
-      {super.key, required this.formKey, required this.sendPostion ,required this.postalCode});
+      {super.key,
+      required this.formKey,
+      required this.sendPostion,
+      required this.postalCode});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _LocationPageState();
@@ -23,6 +26,7 @@ class _LocationPageState extends ConsumerState<LocationPage> {
   Position? currPosition;
   List<Locations> locations = [];
   String? valueChoose;
+  bool isLoading = false;
 
   void getLocation(String pincode) async {
     locations =
@@ -47,11 +51,14 @@ class _LocationPageState extends ConsumerState<LocationPage> {
         await ref.read(userDetailsControllerProvider).getCurrentLocation();
     List<Placemark> placemark = await ref
         .read(userDetailsControllerProvider)
-        .getAddressFromLatLong(currPosition!.latitude.toString(),currPosition!.longitude.toString());
+        .getAddressFromLatLong(currPosition!.latitude.toString(),
+            currPosition!.longitude.toString());
     currentPincode = placemark[0].postalCode;
     pincodeController.text = currentPincode!;
     widget.sendPostion(currPosition!);
-    setState(() {});
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -60,8 +67,11 @@ class _LocationPageState extends ConsumerState<LocationPage> {
       children: [
         Align(
             alignment: Alignment.topLeft,
-            child: ElevatedButton.icon(
+            child: isLoading==true?const CircularProgressIndicator(): ElevatedButton.icon(
                 onPressed: () {
+                  setState(() {
+                    isLoading = true;
+                  });
                   currentLocation();
                 },
                 icon: pincodeController.text != "" &&

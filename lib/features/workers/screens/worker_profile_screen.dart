@@ -188,9 +188,9 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
             .getWorkerData(workType, widget.workerInf['workerId']![0]),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
+            return const Center(child: Text('This user is not present now'));
           } else {
             Map<String, dynamic> worker = snapshot.data as Map<String, dynamic>;
             var geopoint = worker['position']['geopoint'];

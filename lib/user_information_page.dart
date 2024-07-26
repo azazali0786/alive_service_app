@@ -1,8 +1,7 @@
-import 'package:alive_service_app/features/workers/screens/appBar.dart';
 import 'package:flutter/material.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:alive_service_app/features/workers/screens/callHistory_list.dart';
 import 'package:alive_service_app/features/workers/screens/work_list.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
 class UserInformationPage extends StatefulWidget {
   static const routeName = "/user-information-screen";
@@ -44,23 +43,24 @@ class _UserInformationPageState extends State<UserInformationPage> {
           ],
         ),
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        index: _currentIndex,
-        height: 60.0,
-        items: const <Widget>[
-          Icon(Icons.home, size: 30, color: Colors.white),
-          Icon(Icons.history, size: 30, color: Colors.white),
-        ],
-        color: Colors.blue,
-        buttonBackgroundColor: Colors.blue,
-        backgroundColor: Colors.white,
-        animationCurve: Curves.easeInOut,
-        animationDuration: const Duration(milliseconds: 600),
+      bottomNavigationBar: SalomonBottomBar(
+        currentIndex: _currentIndex,
         onTap: (index) {
           setState(() => _currentIndex = index);
           _pageController.jumpToPage(index);
         },
-        letIndexChange: (index) => true,
+        items: [
+          SalomonBottomBarItem(
+            icon: Icon(Icons.home),
+            title: Text("Home"),
+            selectedColor: Colors.blue,
+          ),
+          SalomonBottomBarItem(
+            icon: Icon(Icons.history),
+            title: Text("History"),
+            selectedColor: Colors.blue,
+          ),
+        ],
       ),
     );
   }

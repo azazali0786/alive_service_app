@@ -1,5 +1,4 @@
 import 'package:alive_service_app/common/utils/utils.dart';
-import 'package:alive_service_app/common/widgets/custom_button.dart';
 import 'package:alive_service_app/features/auth/controller/auth_controller.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +15,7 @@ class LoginPage extends ConsumerStatefulWidget {
 class _LoginPageState extends ConsumerState<LoginPage> {
   final TextEditingController phoneController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -103,7 +103,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         fontWeight: FontWeight.bold,
                       ),
                       validator: (value) {
-                        if (value!.isEmpty||!RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]+$').hasMatch(value)||value.length<=9) {
+                        if (value!.isEmpty ||
+                            !RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]+$')
+                                .hasMatch(value) ||
+                            value.length <= 9) {
                           return 'Enter correct phone number';
                         } else {
                           return null;
@@ -130,8 +133,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           borderSide: const BorderSide(color: Colors.black12),
                         ),
                         prefixIcon: Container(
-                          padding:
-                              const EdgeInsets.only(left: 15, top: 14, right: 10),
+                          padding: const EdgeInsets.only(
+                              left: 15, top: 14, right: 10),
                           child: InkWell(
                             onTap: () {
                               showCountryPicker(
@@ -170,23 +173,26 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   size: 20,
                                 ),
                               )
-                            : null, 
+                            : null,
                       ),
                     ),
                     const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: CustomButton(
-                          text: "Login",
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              return sendPhoneNumber();
-                            } else {
-                              return showSnackBar(context: context, content: "Please enter correct number");
-                            }
-                          }),
-                    ),
+                    _isLoading
+                        ? const CircularProgressIndicator()
+                        : SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton(
+                                child: const Text('Login'),
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() {
+                                      _isLoading = true;
+                                    });
+                                    sendPhoneNumber();
+                                  }
+                                }),
+                          ),
                   ],
                 ),
               ),
