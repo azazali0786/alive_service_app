@@ -1,3 +1,6 @@
+// ignore_for_file: unused_local_variable
+
+import 'package:alive_service_app/common/utils/colors.dart';
 import 'package:alive_service_app/features/auth/controller/auth_controller.dart';
 import 'package:alive_service_app/features/details/screens/user_detail_page.dart';
 import 'package:alive_service_app/features/drawer/controller/drawer_controller.dart';
@@ -70,7 +73,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
 
     return Drawer(
       child: Material(
-        color: const Color.fromARGB(255, 50, 205, 195),
+        color:Color.fromARGB(188, 136, 76, 204),
         child: ListView(
           children: <Widget>[
             buildHeader(
@@ -91,9 +94,13 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                   // Refresh the user work data after navigating back
                 } else {
                   Map<String, dynamic> worker = {};
-                  await Navigator.pushNamed(context, UserDetailPage.routeName,arguments: worker,);
+                  await Navigator.pushNamed(
+                    context,
+                    UserDetailPage.routeName,
+                    arguments: worker,
+                  );
                 }
-                  _fetchUserWorkData();
+                _fetchUserWorkData();
               },
             ),
             Container(
@@ -115,7 +122,7 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                     icon: const Icon(Icons.settings),
                     label: const Text('Add your Work'),
                   ),
-                  SizedBox(height: size.height * 0.07),
+                  SizedBox(height: size.height * 0.05),
                   buildMenuItem(
                     text: 'Home',
                     icon: Icons.home,
@@ -124,27 +131,25 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                       currentPage = 'Home';
                     },
                   ),
-                  SizedBox(height: size.height * 0.02),
+                  SizedBox(height: size.height * 0.01),
                   buildMenuItem(
                     text: 'History',
-                    icon: Icons.history,
+                    icon: Icons.location_history,
                     onClicked: () {
                       widget.onSelectedPage('History');
                       currentPage = 'History';
                     },
                   ),
-                  SizedBox(height: size.height * 0.02),
+                  SizedBox(height: size.height * 0.01),
                   buildMenuItem(
                     text: 'About',
-                    icon: Icons.warning_amber_rounded,
+                    icon: Icons.warning_rounded,
                     onClicked: () {
                       widget.onSelectedPage('About');
                       currentPage = 'About';
                     },
                   ),
-                  SizedBox(height: size.height * 0.02),
-                  const Divider(color: Colors.white70),
-                  SizedBox(height: size.height * 0.05),
+                  SizedBox(height: size.height * 0.01),
                   buildMenuItem(
                     text: 'Logout',
                     icon: Icons.logout_outlined,
@@ -152,6 +157,26 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                       signOut();
                     },
                   ),
+                  SizedBox(height: size.height * 0.02),
+                  const Divider(color: Colors.white70),
+                  SizedBox(height: size.height * 0.07),
+                  buildMenuItem(
+                    text: 'Privacy Policy',
+                    icon: Icons.policy,
+                    onClicked: () {
+                      widget.onSelectedPage('Privacy Policy');
+                      currentPage = 'Privacy Policy';
+                    },
+                  ),
+                  buildMenuItem(
+                    text: 'Term and Conditions',
+                    icon: Icons.description_sharp,
+                    onClicked: () {
+                      widget.onSelectedPage('Term and Conditions');
+                      currentPage = 'Term and Conditions';
+                    },
+                  ),
+                  
                 ],
               ),
             ),

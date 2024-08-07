@@ -1,3 +1,4 @@
+import 'package:alive_service_app/common/utils/colors.dart';
 import 'package:alive_service_app/common/utils/utils.dart';
 import 'package:alive_service_app/features/details/controller/user_details_controller.dart';
 import 'package:alive_service_app/features/workers/controller/workerController.dart';
@@ -72,37 +73,47 @@ class WorkerListState extends ConsumerState<WorkerList> {
     }
   }
 
-  String radius = '5';
+  String radius = '10';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: white,
       appBar: AppBar(
+        backgroundColor: white,
         actions: [
           PopupMenuButton(
             child: Padding(
-              padding: const EdgeInsets.only(right: 12),
+              padding: const EdgeInsets.only(right: 22),
               child: Row(
                 children: [
-                  const Text(
+                   Text(
                     "Radius",
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(
+                            color: black.withOpacity(0.8),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
+                          ),
                   ),
-                  const SizedBox(
-                    width: 12,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width*0.01,
                   ),
                   Text(
                     "${radius}km",
-                    style: const TextStyle(fontSize: 18),
+                    style: TextStyle(
+                      color: black.withOpacity(0.7),
+                      fontSize: 15.0,
+                    ),
                   ),
                 ],
               ),
             ),
             itemBuilder: (context) => [
-              const PopupMenuItem(value: "5", child: Text('5')),
               const PopupMenuItem(value: "10", child: Text('10')),
-              const PopupMenuItem(value: "15", child: Text('15')),
-              const PopupMenuItem(value: "30", child: Text('30')),
+              const PopupMenuItem(value: "100", child: Text('100')),
+              const PopupMenuItem(value: "500", child: Text('500')),
+              const PopupMenuItem(value: "1000", child: Text('1000')),
+              const PopupMenuItem(value: "2000", child: Text('2000')),
             ],
             onSelected: (newValue) {
               setState(() {
@@ -111,7 +122,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
             },
           ),
         ],
-        title: const Text("workers"),
+        title: const Text("workers",style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
       ),
       body: getBody(),
       floatingActionButton: FloatingActionButton(
@@ -140,13 +151,19 @@ class WorkerListState extends ConsumerState<WorkerList> {
                   "Rating..",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                Switch(
-                  value: sortByRating,
-                  onChanged: (onchange) {
-                    setState(() {
-                      sortByRating = onchange;
-                    });
-                  },
+                Transform.scale(
+                  scale: 0.8,
+                  child: Switch(
+                    value: sortByRating,
+                    onChanged: (onchange) {
+                      setState(() {
+                        sortByRating = onchange;
+                      });
+                    },
+                    activeColor: Colors.blue, // Customize active color
+                    inactiveThumbColor: Colors.grey, // Customize inactive thumb color
+                    inactiveTrackColor: Colors.grey.withOpacity(0.3), 
+                  ),
                 ),
               ],
             ),
@@ -247,63 +264,78 @@ class WorkerListState extends ConsumerState<WorkerList> {
                                   ),
                                   SizedBox(width: size.width * 0.025),
                                   SizedBox(
-                                    width: size.width * 0.35,
+                                    width: size.width * 0.47,
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           worker['shopeName'],
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
+                                          style: TextStyle(
+                                        color: black.withOpacity(0.8),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18.0,
+                                      ),
                                         ),
                                         Text(
                                           '${widget.workType} ',
-                                          style: const TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                        SmoothStarRating(
-                                          allowHalfRating: false,
-                                          onRatingChanged:
-                                              null, // Set to null to disable rating changes
-                                          starCount: 5,
-                                          rating:
-                                              worker['overallRating'] ?? 0.0,
-                                          size: 20.0,
-                                          filledIconData: Icons.star,
-                                          halfFilledIconData:
-                                              Icons.star_half_outlined,
-                                          color: Colors.green,
-                                          borderColor: Colors.green,
-                                          spacing: 0.0,
+                                          style: TextStyle(
+                                        color: black.withOpacity(0.5),
+                                        fontSize: 15.0,
+                                      ),
                                         ),
                                         Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            SizedBox(
-                                              width: size.width * 0.28,
-                                              child: Text(
-                                                addressSnapshot.data!,
-                                                style: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w600,
+                                            SmoothStarRating(
+                                              allowHalfRating: false,
+                                              // onRatingChanged:
+                                              //     null, 
+                                              starCount: 5,
+                                              rating:
+                                                  worker['overallRating'] ?? 0.0,
+                                              size: 20.0,
+                                              filledIconData: Icons.star,
+                                              halfFilledIconData:
+                                                  Icons.star_half_outlined,
+                                              color: Colors.green,
+                                              borderColor: Colors.green,
+                                              spacing: 0.0,
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                getCall(worker, snapshot.data![index].id);
+                                              },
+                                              child: const Icon(Icons.phone))
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: RichText(
+                                                text: TextSpan(
+                                                  text: addressSnapshot.data,
+                                                  style: TextStyle(
+                                                    color: Colors.black.withOpacity(0.5),
+                                                    fontSize: 15.0,
+                                                    height: 1.4,
+                                                    letterSpacing: 0.5,
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                            const Icon(Icons.location_on),
+                                            const Icon(
+                                              Icons.location_on, 
+                                              color: green, 
+                                              size: 20.0, 
+                                            ),
                                           ],
                                         ),
                                       ],
                                     ),
                                   ),
-                                  IconButton(
-                                    onPressed: () {
-                                      getCall(worker, snapshot.data![index].id);
-                                    },
-                                    icon: const Icon(Icons.call),
-                                  ),
+                                  
                                 ],
                               ),
                             ),

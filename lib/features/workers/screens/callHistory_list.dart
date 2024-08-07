@@ -1,3 +1,4 @@
+import 'package:alive_service_app/common/utils/colors.dart';
 import 'package:alive_service_app/features/workers/controller/workerController.dart';
 import 'package:alive_service_app/features/workers/screens/worker_profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,6 +21,7 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: white,
       body: getBody(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -85,23 +87,29 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
                         children: [
                           Text(
                             worker['shopName'],
-                            style: const TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                        color: black.withOpacity(0.8),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18.0,
+                                      ),
                           ),
                           Text(
                             worker['workType'],
-                            style: const TextStyle(
-                                fontSize: 13, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                        color: black.withOpacity(0.5),
+                                        fontSize: 15.0,
+                                      ),
                           ),
                           Row(
                             children: [
-                              const Icon(Icons.arrow_outward,size: 18,),
+                              Icon(Icons.arrow_outward,size: 15,color: black.withOpacity(0.5),),
                               SizedBox(
                                 child: Text(
                                   ' $formattedTime',
-                                  style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600),
+                                  style: TextStyle(
+                                        color: black.withOpacity(0.5),
+                                        fontSize: 15.0,
+                                      ),
                                 ),
                               ),
                             ],
@@ -112,9 +120,10 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
                                 width: size.width * 0.28,
                                 child: Text(
                                   formattedDate,
-                                  style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600),
+                                 style: TextStyle(
+                                        color: black.withOpacity(0.5),
+                                        fontSize: 15.0,
+                                      ),
                                 ),
                               ),
                             ],

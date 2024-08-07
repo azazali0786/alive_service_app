@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:alive_service_app/common/utils/colors.dart';
 import 'package:alive_service_app/common/utils/utils.dart';
 import 'package:alive_service_app/features/details/controller/user_details_controller.dart';
 import 'package:alive_service_app/features/details/screens/location_page.dart';
@@ -23,7 +24,7 @@ class UserDetailPage extends ConsumerStatefulWidget {
 
 class _UserDetailPageState extends ConsumerState<UserDetailPage> {
   final TextEditingController shopeNameController = TextEditingController();
-  TextEditingController discriptionController = TextEditingController();
+  final TextEditingController discriptionController = TextEditingController();
   String postalCode = '';
   File? mainImage;
   List<XFile> imageFileList = [];
@@ -31,6 +32,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
   String? workType;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  int imageCount = 5;
 
   List<Time> timeList =
       List<Time>.filled(2, Time(hour: 0, minute: 0, timeFormat: ''));
@@ -68,6 +70,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
       File fileImage =
           await ref.read(userDetailsControllerProvider).urlToFile(image);
       imageFileList.add(XFile(fileImage.path));
+      imageCount = imageCount - imageFileList.length;
     }
     setState(() {
       _isLoading = false;
@@ -84,7 +87,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
   }
 
   void selectmoreImage() async {
-    imageFileList.addAll(await pickMUltiImageFromGallery(context));
+    imageFileList.addAll(await pickMUltiImageFromGallery(context, imageCount));
     setState(() {});
   }
 
@@ -92,13 +95,14 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
     if (_formKey.currentState!.validate() && timeList[0].timeFormat == '') {
       timingBottomSheet(context);
     } else if (_formKey.currentState!.validate() && mainImage != null) {
+      var phoneNumber =
+          ref.read(userDetailsControllerProvider).getCurrUserPhoneNumber();
       showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
               title: const Text("Alert"),
-              content: const Text(
-                  "Do you want to submit"),
+              content:  Text("$phoneNumber, This number will be used to make calls and messages.\n\nDo you want to submit."),
               actions: [
                 TextButton(
                     onPressed: () {
@@ -107,16 +111,21 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                     child: const Text('No')),
                 TextButton(
                     onPressed: () {
-                      ref.read(userDetailsControllerProvider).saveUserDetailData(
-                          context,
-                          mainImage!,
-                          imageFileList,
-                          shopeNameController.text,
-                          workType!,
-                          timeList,
-                          position!,
-                          discriptionController.text);
-                      showSnackBar(context: context, content: 'Form submitted successfully');
+                      ref
+                          .read(userDetailsControllerProvider)
+                          .saveUserDetailData(
+                            context,
+                            mainImage!,
+                            imageFileList,
+                            shopeNameController.text,
+                            workType!,
+                            timeList,
+                            position!,
+                            discriptionController.text,
+                          );
+                      showSnackBar(
+                          context: context,
+                          content: 'Form submitted successfully');
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
                     },
@@ -134,6 +143,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: white,
       appBar: widget.currentUser == 'true'
           ? AppBar(
               title: const Text('Edit yourId'),
@@ -179,40 +189,46 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
               title: const Text('Register yourself'),
             ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(left: 15,right: 15,bottom: 15),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
             child: Column(
               children: [
-                 mainImage != null
-                    ?InkWell(
-                            onTap: selectImage,
-                            child: CircleAvatar(
-                              radius: 70,
-                              backgroundImage: FileImage(mainImage!),
-                              backgroundColor: Colors.white,
-                            ),
-                          ):widget.currentUser=='true'? const CircularProgressIndicator():Stack(children: [
-                        const CircleAvatar(
+                SizedBox(height: size.height*0.02,),
+                mainImage != null
+                    ? InkWell(
+                        onTap: selectImage,
+                        child: CircleAvatar(
                           radius: 70,
-                          backgroundImage: NetworkImage(
-                              'https://cdn-icons-png.flaticon.com/512/6681/6681204.png'),
+                          backgroundImage: FileImage(mainImage!),
                           backgroundColor: Colors.white,
                         ),
-                        Positioned(
-                          bottom: size.height * 0.01,
-                          left: size.width * 0.25,
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.add_a_photo,
-                              size: 40,
-                              color: Color.fromARGB(255, 28, 104, 184),
+                      )
+                    : widget.currentUser == 'true'
+                        ? _isLoading
+                            ? const CircularProgressIndicator()
+                            : const SizedBox()
+                        : Stack(children: [
+                            const CircleAvatar(
+                              radius: 70,
+                              backgroundImage: NetworkImage(
+                                  'https://cdn-icons-png.flaticon.com/512/6681/6681204.png'),
+                              backgroundColor: Colors.white,
                             ),
-                            onPressed: () => selectImage(),
-                          ),
-                        ),
-                      ]),
+                            Positioned(
+                              bottom: size.height * 0.01,
+                              left: size.width * 0.25,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.add_a_photo,
+                                  size: 40,
+                                  color: Color.fromARGB(255, 28, 104, 184),
+                                ),
+                                onPressed: () => selectImage(),
+                              ),
+                            ),
+                          ]),
                 SizedBox(
                   height: size.height * 0.02,
                 ),
@@ -271,9 +287,13 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                               );
                             }),
                       )
-                    : widget.currentUser=='true'?_isLoading==true?const CircularProgressIndicator():const SizedBox():const SizedBox(
-                        height: 12,
-                      ),
+                    : widget.currentUser == 'true'
+                        ? _isLoading == true
+                            ? const CircularProgressIndicator()
+                            : const SizedBox()
+                        : const SizedBox(
+                            height: 12,
+                          ),
                 const SizedBox(
                   height: 3,
                 ),
@@ -293,8 +313,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                       ),
                       maxLength: 15,
                       validator: (value) {
-                        if (value!.isEmpty ||
-                            !RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
+                        if (value!.isEmpty) {
                           return 'Enter correct shopName';
                         } else {
                           return null;
@@ -333,24 +352,26 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                         }).toList(),
                       )
                     : const SizedBox(),
-                Row(
-                  children: [
-                    const SizedBox(
-                      child: Text(
-                        '  Select time schedule',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
+                SizedBox(
+                  height: size.height * 0.02,
+                ),
+                GestureDetector(
+                  onTap: () => timingBottomSheet(context),
+                  child: const Row(
+                    children: [
+                      SizedBox(
+                        child: Text(
+                          '  Select time schedule  ',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
                       ),
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          timingBottomSheet(context);
-                        },
-                        icon: const Icon(
-                          Icons.schedule_send,
-                          color: Colors.blue,
-                        ))
-                  ],
+                      Icon(
+                        Icons.schedule_send,
+                        color: Color.fromARGB(255, 134, 75, 186),
+                      )
+                    ],
+                  ),
                 ),
                 timeList[0].timeFormat != ''
                     ? Row(
@@ -402,8 +423,15 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                     ),
                   ),
                 ),
-                ElevatedButton(
-                    onPressed: _submitForm, child: const Text('Submit')),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                      onPressed: _submitForm,
+                      child: widget.currentUser == 'true'
+                          ? const Text('Update')
+                          : const Text('Submit')),
+                ),
               ],
             ),
           ),

@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:alive_service_app/common/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 
@@ -44,9 +45,12 @@ class _TimingPageState extends State<TimingPage> {
             height: 20,
           ),
           Text(
-              "Pick Your Time! ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, "0")} $timeFormat",
-              style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              "Pick Your Time!  ${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, "0")} $timeFormat",
+              style: TextStyle(
+                                        color: black.withOpacity(0.8),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18.0,
+                                      ),),
           const SizedBox(
             height: 20,
           ),
@@ -56,15 +60,21 @@ class _TimingPageState extends State<TimingPage> {
                   children: [
                     Text(
                         '  ${timeList[0].hour.toString().padLeft(2, '0')}:${timeList[0].minute.toString().padLeft(2, '0')} ${timeList[0].timeFormat}',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18)),
-                    const Text('To',
+                       style: TextStyle(
+                                        color: black.withOpacity(0.5),
+                                        fontSize: 18.0,
+                                      ),),
+                    Text('To',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18)),
+                                        color: black.withOpacity(0.5),
+                                        fontSize: 18.0,
+                                      ),),
                     Text(
                         "${timeList[1].hour.toString().padLeft(2, '0')}:${timeList[1].minute.toString().padLeft(2, '0')} ${timeList[1].timeFormat} ",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18)),
+                        style: TextStyle(
+                                        color: black.withOpacity(0.5),
+                                        fontSize: 18.0,
+                                      ),),
                   ],
                 )
               : const SizedBox(),

@@ -1,8 +1,8 @@
 import 'package:alive_service_app/features/auth/screens/otp_page.dart';
-import 'package:alive_service_app/features/drawer/screens/about.dart';
 import 'package:alive_service_app/features/drawer/screens/menu_page.dart';
 import 'package:alive_service_app/features/workers/screens/appBar.dart';
 import 'package:alive_service_app/features/workers/screens/callHistory_list.dart';
+import 'package:alive_service_app/policy_page.dart';
 import 'package:alive_service_app/user_information_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -83,7 +83,11 @@ class _MainPageState extends ConsumerState<MainPage> {
       case 'History':
         return const CallhistoryList();
       case 'About':
-        return const AboutPage();
+        return const PolicyPage(filePath: 'policies/about.md');
+      case 'Term and Conditions':
+        return  const PolicyPage(filePath: 'policies/term_and_conditions.md');
+      case 'Privacy Policy':
+        return const PolicyPage(filePath: 'policies/privacy_policy.md');
       default:
         return const OtpPage(verificationId: 'verificationId');
     }

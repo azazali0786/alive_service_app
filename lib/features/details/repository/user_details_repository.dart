@@ -103,6 +103,11 @@ class UserDetailsRepository {
     return file;
   }
 
+  String getCurrUserPhoneNumber(){
+    final phoneNumber = auth.currentUser!.phoneNumber;
+    return phoneNumber!;
+  }
+
   void deleteUserData(String workType) async {
     final currUser = auth.currentUser!.uid;
     await firestore

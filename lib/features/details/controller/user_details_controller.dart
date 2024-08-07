@@ -34,6 +34,10 @@ class UserDetailsController {
     return userDetailsRepository.urlToFile(imageUrl);
   }
 
+  String getCurrUserPhoneNumber() {
+    return userDetailsRepository.getCurrUserPhoneNumber();
+  }
+
   void deleteUserData(String workType) {
     return userDetailsRepository.deleteUserData(workType);
   }

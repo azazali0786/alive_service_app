@@ -1,7 +1,7 @@
+import 'package:alive_service_app/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:alive_service_app/features/workers/screens/callHistory_list.dart';
-import 'package:alive_service_app/features/workers/screens/work_list.dart';
 
 class UserInformationPage extends StatefulWidget {
   static const routeName = "/user-information-screen";
@@ -37,8 +37,8 @@ class _UserInformationPageState extends State<UserInformationPage> {
           onPageChanged: (index) {
             setState(() => _currentIndex = index);
           },
-          children: const <Widget>[
-            WorkList(),
+          children:  const <Widget>[
+            HomePage(),
             CallhistoryList(),
           ],
         ),
@@ -51,13 +51,13 @@ class _UserInformationPageState extends State<UserInformationPage> {
         },
         items: [
           SalomonBottomBarItem(
-            icon: Icon(Icons.home),
-            title: Text("Home"),
+            icon: const Icon(Icons.home),
+            title: const Text("Home"),
             selectedColor: Colors.blue,
           ),
           SalomonBottomBarItem(
-            icon: Icon(Icons.history),
-            title: Text("History"),
+            icon: const Icon(Icons.location_history),
+            title: const Text("History"),
             selectedColor: Colors.blue,
           ),
         ],

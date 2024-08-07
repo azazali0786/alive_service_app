@@ -24,12 +24,15 @@ Future<File?> pickImageFromGallery(BuildContext context) async {
   return image;
 }
 
-Future<List<XFile>> pickMUltiImageFromGallery(BuildContext context) async {
+Future<List<XFile>> pickMUltiImageFromGallery(BuildContext context,int imageCount) async {
   List<XFile> imageFileList = [];
   try {
     final pickedImage = await ImagePicker().pickMultiImage();
-    imageFileList.addAll(pickedImage);
-    // }
+      if (pickedImage.length <= imageCount) {
+        imageFileList.addAll(pickedImage);
+      } else {
+        showSnackBar(context: context, content: 'You can pick up to 5 images only.');
+      }
   } catch (e) {
     showSnackBar(context: context, content: e.toString());
   }
