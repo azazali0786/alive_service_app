@@ -92,8 +92,7 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
     if (placemarks.isNotEmpty) {
       Placemark firstPlacemark = placemarks.first;
       String address =
-          "${firstPlacemark.subLocality}, ${firstPlacemark.locality}, ${firstPlacemark.street}, ${firstPlacemark.administrativeArea}";
-
+          "${firstPlacemark.subLocality}, ${firstPlacemark.locality}, ${firstPlacemark.postalCode}, ${firstPlacemark.administrativeArea}";
       return address;
     } else {
       return "No address found";

@@ -36,7 +36,9 @@ class AuthRepository {
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
     } on FirebaseAuthException catch (e) {
-      showSnackBar(context: context, content: e.message!);
+      if (context.mounted) {
+        showSnackBar(context: context, content: e.message!);
+      }
     }
   }
 
@@ -65,10 +67,14 @@ class AuthRepository {
   void signOut(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
-      Navigator.pushNamedAndRemoveUntil(
+      if (context.mounted) {
+          Navigator.pushNamedAndRemoveUntil(
           context, LoginPage.routeName, (route) => false);
+      }
     } catch (e) {
-      showSnackBar(context: context, content: e.toString());
+      if (context.mounted) {
+        showSnackBar(context: context, content: e.toString());
+      }
     }
   }
 }

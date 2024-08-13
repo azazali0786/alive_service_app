@@ -19,7 +19,9 @@ Future<File?> pickImageFromGallery(BuildContext context) async {
       image = File(pickedImage.path);
     }
   } catch (e) {
-    showSnackBar(context: context, content: e.toString());
+   if (context.mounted) {
+        showSnackBar(context: context, content: e.toString());
+      }
   }
   return image;
 }
@@ -31,10 +33,14 @@ Future<List<XFile>> pickMUltiImageFromGallery(BuildContext context,int imageCoun
       if (pickedImage.length <= imageCount) {
         imageFileList.addAll(pickedImage);
       } else {
-        showSnackBar(context: context, content: 'You can pick up to 5 images only.');
+        if(context.mounted){
+           showSnackBar(context: context, content: 'You can pick up to 5 images only.');
+        }
       }
   } catch (e) {
-    showSnackBar(context: context, content: e.toString());
+    if(context.mounted){
+      showSnackBar(context: context, content: e.toString());
+    }
   }
   return imageFileList;
 }

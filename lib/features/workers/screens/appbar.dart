@@ -1,7 +1,8 @@
-import 'package:alive_service_app/common/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+
+import '../../../common/utils/colors.dart';
 
 class Appbar extends StatefulWidget implements PreferredSizeWidget {
   final ZoomDrawerController zoomDrawerController;
@@ -9,8 +10,8 @@ class Appbar extends StatefulWidget implements PreferredSizeWidget {
   const Appbar({Key? key, required this.zoomDrawerController})
       : super(key: key);
 
-  @override
-  _AppbarState createState() => _AppbarState();
+  @override 
+  State<Appbar> createState() => _AppbarState();
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);

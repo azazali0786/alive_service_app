@@ -196,7 +196,9 @@ class UserDetailsRepository {
           .doc(workType)
           .set({'id': workType});
     } catch (e) {
-      showSnackBar(context: context, content: e.toString());
+      if(context.mounted){
+         showSnackBar(context: context, content: e.toString());
+      }
     }
   }
 }
