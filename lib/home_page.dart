@@ -24,7 +24,7 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
-              "Alive Service,",
+              "Alive Service,", 
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
             ),
             IconButton(onPressed: () {
@@ -68,7 +68,7 @@ class HomePage extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: <Widget>[
-                    Image.network(
+                    Image.asset(
                       item['img'],
                       fit: BoxFit.cover,
                     ),
@@ -92,8 +92,7 @@ class HomePage extends StatelessWidget {
                           item['title'] ?? 'No Title', // Display the title from adsData
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 12.0,
                           ),
                         ),
                       ),
@@ -130,48 +129,54 @@ class HomePage extends StatelessWidget {
   children: <Widget>[
     Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(online_data_one.length, (index) {
+      children: List.generate(dataOne.length, (index) {
         return GestureDetector(
           onTap: () {
             Navigator.pushNamed(context, WorkerList.routeName,
-                    arguments: online_data_one[index]['title']);
+                    arguments: dataOne[index]['title']);
           },
           child: Padding(
             padding: EdgeInsets.only(bottom: size.height*0.02),
             child: Stack(
               children: <Widget>[
                 Container(
-                  width: size.width * 0.28,
-                  height: size.height * 0.18,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(online_data_one[index]['img']),
-                      fit: BoxFit.cover,
+                      width: size.width * 0.28,
+                      height: size.height * 0.18,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                          image: AssetImage(dataOne[index]['img']),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      padding: EdgeInsets.only(bottom: size.height * 0.045),
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color.fromARGB(100, 0, 0, 0),
+                                  Color.fromARGB(0, 0, 0, 0),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.center,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
                 Padding(
-                  padding: EdgeInsets.only(top: size.height*0.03, right: size.width*0.01, left: size.width*0.02),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        online_data_one[index]['title'],
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        online_data_one[index]['courses'],
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: black.withOpacity(0.6),
-                        ),
-                      ),
-                    ],
+                  padding: EdgeInsets.only(top: size.height*0.01, right: size.width*0.01, left: size.width*0.02),
+                  child: Text(
+                    dataOne[index]['title'],
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: white
+                    ),
                   ),
                 ),
               ],
@@ -182,49 +187,54 @@ class HomePage extends StatelessWidget {
     ),
     Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(online_data_two.length, (index) {
+      children: List.generate(dataTwo.length, (index) {
         return GestureDetector(
           onTap: () {
             Navigator.pushNamed(context, WorkerList.routeName,
-                    arguments: online_data_two[index]['title']);
+                    arguments: dataTwo[index]['title']);
           },
           child: Padding(
             padding: EdgeInsets.only(bottom: size.height*0.02),
             child: Stack(
               children: <Widget>[
                 Container(
-                  width: size.width * 0.28,
-                  height: size.height * 0.25,
-                  decoration: BoxDecoration(
-                    color: primary,
-                    image: DecorationImage(
-                      image: AssetImage(online_data_two[index]['img']),
-                      fit: BoxFit.cover,
+                      width: size.width * 0.28,
+                      height: size.height * 0.25,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                          image: AssetImage(dataTwo[index]['img']),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      padding: EdgeInsets.only(bottom: size.height * 0.045),
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color.fromARGB(100, 0, 0, 0),
+                                  Color.fromARGB(0, 0, 0, 0),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.center,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
                 Padding(
-                  padding: EdgeInsets.only(top: size.height*0.03, right: size.width*0.01, left: size.width*0.02),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        online_data_two[index]['title'],
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        online_data_two[index]['courses'],
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: black.withOpacity(0.6),
-                        ),
-                      ),
-                    ],
+                  padding: EdgeInsets.only(top: size.height*0.01, right: size.width*0.01, left: size.width*0.02),
+                  child: Text(
+                    dataTwo[index]['title'],
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: white
+                    ),
                   ),
                 ),
               ],
@@ -235,48 +245,54 @@ class HomePage extends StatelessWidget {
     ),
     Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(online_data_three.length, (index) {
+      children: List.generate(dataThree.length, (index) {
         return GestureDetector(
           onTap: () {
             Navigator.pushNamed(context, WorkerList.routeName,
-                    arguments: online_data_three[index]['title']);
+                    arguments: dataThree[index]['title']);
           },
           child: Padding(
             padding: EdgeInsets.only(bottom: size.height*0.02),
             child: Stack(
               children: <Widget>[
                 Container(
-                  width: size.width * 0.28,
-                  height: size.height * 0.18,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(online_data_three[index]['img']),
-                      fit: BoxFit.cover,
+                      width: size.width * 0.28,
+                      height: size.height * 0.18,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                          image: AssetImage(dataThree[index]['img']),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      padding: EdgeInsets.only(bottom: size.height * 0.045),
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color.fromARGB(100, 0, 0, 0),
+                                  Color.fromARGB(0, 0, 0, 0),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.center,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
                 Padding(
-                  padding: EdgeInsets.only(top: size.height*0.03, right: size.width*0.02, left: size.width*0.02),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        online_data_three[index]['title'],
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        online_data_three[index]['courses'],
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: black.withOpacity(0.6),
-                        ),
-                      ),
-                    ],
+                  padding: EdgeInsets.only(top: size.height*0.01, right: size.width*0.02, left: size.width*0.02),
+                  child: Text(
+                    dataThree[index]['title'],
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: white
+                    ),
                   ),
                 ),
               ],
@@ -330,12 +346,15 @@ class MySearchDelegate extends SearchDelegate {
         itemCount: suggestions.length,
         itemBuilder: (context, index) {
           final suggestion = suggestions[index];
-          return ListTile(
-            title: Text(suggestion),
-            onTap: () {
-              query = suggestion;
-              _navigateToWorkerList(context, query);
-            },
+          return Container(
+            color: white,
+            child: ListTile(
+              title: Text(suggestion),
+              onTap: () {
+                query = suggestion;
+                _navigateToWorkerList(context, query);
+              },
+            ),
           );
         });
   }

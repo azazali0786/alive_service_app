@@ -203,11 +203,11 @@ class _TimingPageState extends State<TimingPage> {
                       },
                       style: ButtonStyle(
                         foregroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white),
-                        backgroundColor: MaterialStateProperty.all<Color>(
+                            WidgetStateProperty.all<Color>(Colors.white),
+                        backgroundColor: WidgetStateProperty.all<Color>(
                             const Color.fromARGB(255, 75, 81, 94)),
                         shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                            WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25.0),
                           ),

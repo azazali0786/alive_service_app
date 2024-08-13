@@ -83,6 +83,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
         backgroundColor: white,
         actions: [
           PopupMenuButton(
+            color: const Color.fromARGB(255, 249, 251, 255),
             child: Padding(
               padding: const EdgeInsets.only(right: 22),
               child: Row(
@@ -126,11 +127,12 @@ class WorkerListState extends ConsumerState<WorkerList> {
       ),
       body: getBody(),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromARGB(255, 109, 160, 255),
         onPressed: () {
           double start = 0;
           scrollController.jumpTo(start);
         },
-        child: const Icon(Icons.arrow_upward),
+        child: const Icon(Icons.arrow_upward,color: white,),
       ),
     );
   }
@@ -298,8 +300,8 @@ class WorkerListState extends ConsumerState<WorkerList> {
                                               filledIconData: Icons.star,
                                               halfFilledIconData:
                                                   Icons.star_half_outlined,
-                                              color: Colors.green,
-                                              borderColor: Colors.green,
+                                              color: const Color.fromARGB(255, 109, 160, 255),
+                                              borderColor: const Color.fromARGB(255, 109, 160, 255),
                                               spacing: 0.0,
                                             ),
                                             GestureDetector(
@@ -327,7 +329,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
                                             ),
                                             const Icon(
                                               Icons.location_on, 
-                                              color: green, 
+                                              color:Color.fromARGB(255, 109, 160, 255), 
                                               size: 20.0, 
                                             ),
                                           ],

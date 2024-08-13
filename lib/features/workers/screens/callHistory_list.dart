@@ -24,11 +24,12 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
       backgroundColor: white,
       body: getBody(),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromARGB(255, 109, 160, 255),
         onPressed: () {
           double start = 0;
           scrollController.jumpTo(start);
         },
-        child: const Icon(Icons.arrow_upward),
+        child: const Icon(Icons.arrow_upward,color: white,),
       ),
     );
   }

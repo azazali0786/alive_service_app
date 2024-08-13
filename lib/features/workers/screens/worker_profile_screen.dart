@@ -59,7 +59,7 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
             itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
             itemBuilder: (context, _) => const Icon(
               Icons.star,
-              color: Colors.amber,
+              color: Color.fromARGB(255, 109, 160, 255),
             ),
             onRatingUpdate: (value) {
               rating = value;
@@ -73,6 +73,7 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
             TextButton(
               onPressed: () {
                 _submitRating(worker, rating);
+                Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
               child: const Text('Submit'),
@@ -152,6 +153,7 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                     } else {
                       return userIdWorkType['workTypes']!.length > 1
                           ? PopupMenuButton(
+                              color: const Color.fromARGB(255, 242, 247, 255),
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 12),
                                 child: Row(
@@ -221,12 +223,13 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                       child: Container(
                         height: size.height * 0.3,
                         decoration: BoxDecoration(
-                          color: lightGreen,
+                          color: Colors.lightBlue,
                           boxShadow: [
                             BoxShadow(
-                              color: green.withOpacity(0.2),
+                              color: const Color.fromARGB(255, 109, 160, 255)
+                                  .withOpacity(0.5),
                               blurRadius: 15,
-                              offset: const Offset(0, 5), 
+                              offset: const Offset(0, 5),
                             ),
                           ],
                           borderRadius: BorderRadius.circular(40),
@@ -277,8 +280,8 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                                             'https://wa.me/${worker['phoneNumber']}'));
                                       },
                                       child: Container(
-                                        width: 40,
-                                        height: 40,
+                                        width: 50,
+                                        height: 50,
                                         decoration: const BoxDecoration(
                                             shape: BoxShape.circle,
                                             image: DecorationImage(
@@ -299,14 +302,16 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                                   size: 20.0,
                                   filledIconData: Icons.star,
                                   halfFilledIconData: Icons.star_half_outlined,
-                                  color: Colors.green,
-                                  borderColor: Colors.green,
+                                  color:
+                                      const Color.fromARGB(255, 109, 160, 255),
+                                  borderColor:
+                                      const Color.fromARGB(255, 109, 160, 255),
                                   spacing: 0.0),
                               SizedBox(
                                 width: size.width * 0.03,
                               ),
                               Text(
-                                worker['overallRating'].toString(),
+                                worker['overallRating'].toStringAsFixed(1),
                                 style: TextStyle(
                                   color: black.withOpacity(0.6),
                                   fontWeight: FontWeight.bold,
@@ -439,7 +444,8 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                                       ),
                                     ),
                                     FloatingActionButton(
-                                      backgroundColor: green,
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 109, 160, 255),
                                       onPressed: () {
                                         getCall(worker,
                                             widget.workerInf['workerId']![0]);

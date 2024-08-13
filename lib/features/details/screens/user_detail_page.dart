@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:alive_service_app/common/utils/colors.dart';
 import 'package:alive_service_app/common/utils/utils.dart';
+import 'package:alive_service_app/common/widgets/data_json.dart';
 import 'package:alive_service_app/features/details/controller/user_details_controller.dart';
 import 'package:alive_service_app/features/details/screens/location_page.dart';
 import 'package:alive_service_app/features/details/screens/timing_page.dart';
@@ -24,7 +25,7 @@ class UserDetailPage extends ConsumerStatefulWidget {
 
 class _UserDetailPageState extends ConsumerState<UserDetailPage> {
   final TextEditingController shopeNameController = TextEditingController();
-  final TextEditingController discriptionController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
   String postalCode = '';
   File? mainImage;
   List<XFile> imageFileList = [];
@@ -47,7 +48,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
   void setValue() {
     workType = widget.worker['workType'];
     shopeNameController.text = widget.worker['shopeName'];
-    discriptionController.text = widget.worker['discription'];
+    descriptionController.text = widget.worker['discription'];
     DateTime timeIn = DateFormat("h:mm a").parse(widget.worker['timeIn']);
     DateTime timeOut = DateFormat("h:mm a").parse(widget.worker['timeIn']);
     timeList[0] = Time(
@@ -87,8 +88,13 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
   }
 
   void selectmoreImage() async {
-    imageFileList.addAll(await pickMUltiImageFromGallery(context, imageCount));
-    setState(() {});
+    if (imageFileList.length < 5) {
+      imageFileList
+          .addAll(await pickMUltiImageFromGallery(context, 5-imageFileList.length));
+      setState(() {});
+    } else {
+      showSnackBar(context: context, content: 'You can pick up to 5 images only');
+    }
   }
 
   void _submitForm() {
@@ -102,7 +108,8 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
           builder: (context) {
             return AlertDialog(
               title: const Text("Alert"),
-              content:  Text("$phoneNumber, This number will be used to make calls and messages.\n\nDo you want to submit."),
+              content: Text(
+                  "$phoneNumber, This number will be used to make calls and messages.\n\nDo you want to submit."),
               actions: [
                 TextButton(
                     onPressed: () {
@@ -121,7 +128,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                             workType!,
                             timeList,
                             position!,
-                            discriptionController.text,
+                            descriptionController.text,
                           );
                       showSnackBar(
                           context: context,
@@ -138,7 +145,6 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
     }
   }
 
-  List workList = ['Plumber', 'Electrician', 'Fridge Mistry', 'AC Mistry'];
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -189,13 +195,15 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
               title: const Text('Register yourself'),
             ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 15,right: 15,bottom: 15),
+        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
             child: Column(
               children: [
-                SizedBox(height: size.height*0.02,),
+                SizedBox(
+                  height: size.height * 0.02,
+                ),
                 mainImage != null
                     ? InkWell(
                         onTap: selectImage,
@@ -208,12 +216,30 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                     : widget.currentUser == 'true'
                         ? _isLoading
                             ? const CircularProgressIndicator()
-                            : const SizedBox()
+                            : Stack(children: [
+                                const CircleAvatar(
+                                  radius: 70,
+                                  backgroundImage:
+                                      AssetImage('assets/user.jpg'),
+                                  backgroundColor: Colors.white,
+                                ),
+                                Positioned(
+                                  bottom: size.height * 0.01,
+                                  left: size.width * 0.25,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.add_a_photo,
+                                      size: 40,
+                                      color: Color.fromARGB(255, 28, 104, 184),
+                                    ),
+                                    onPressed: () => selectImage(),
+                                  ),
+                                ),
+                              ])
                         : Stack(children: [
                             const CircleAvatar(
                               radius: 70,
-                              backgroundImage: NetworkImage(
-                                  'https://cdn-icons-png.flaticon.com/512/6681/6681204.png'),
+                              backgroundImage: AssetImage('assets/user.jpg'),
                               backgroundColor: Colors.white,
                             ),
                             Positioned(
@@ -265,7 +291,8 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                                 child: Stack(children: [
                                   Container(
                                     width: 100,
-                                    color: Colors.red,
+                                    color: const Color.fromARGB(
+                                        255, 232, 240, 255),
                                     child: Image.file(
                                         File(imageFileList[index].path),
                                         fit: BoxFit.cover),
@@ -344,7 +371,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                             return null;
                           }
                         },
-                        items: workList.map((value) {
+                        items: workNameList.map((value) {
                           return DropdownMenuItem(
                             value: value,
                             child: Text('   $value  '),
@@ -404,18 +431,18 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: TextFormField(
-                      controller: discriptionController,
+                      controller: descriptionController,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       maxLines: 3,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: "Discription",
-                        labelText: 'Enter for discription',
+                        hintText: "Description",
+                        labelText: 'Enter for Description',
                       ),
                       maxLength: 120,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Please write discription';
+                          return 'Please write Description';
                         } else {
                           return null;
                         }

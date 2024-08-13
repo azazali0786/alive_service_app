@@ -1,5 +1,6 @@
 import 'package:alive_service_app/common/utils/utils.dart';
 import 'package:alive_service_app/features/auth/controller/auth_controller.dart';
+import 'package:alive_service_app/features/auth/screens/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
@@ -132,7 +133,8 @@ class _OtpPageState extends ConsumerState<OtpPage> {
                   ),
                   const SizedBox(height: 15),
                   GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
+                    onTap: () => Navigator.pushNamedAndRemoveUntil(
+            context, LoginPage.routeName, (route) => false),
                     child: const Text(
                       "Resend New Code",
                       style: TextStyle(

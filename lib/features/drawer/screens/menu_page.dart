@@ -68,12 +68,11 @@ class _MenuPageState extends ConsumerState<MenuPage> {
     String currentPage = widget.currentPage;
     final name = userIdWorkType['userData']?[1] ?? "NoUser";
     final email = userIdWorkType['userData']?[2] ?? "Please Loging";
-    final urlImage = userIdWorkType['userData']?[0] ??
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80';
+    final urlImage = userIdWorkType['userData']?[0] ?? 'noImage';
 
     return Drawer(
       child: Material(
-        color:Color.fromARGB(188, 136, 76, 204),
+        color: const Color.fromARGB(255, 184, 153, 255),
         child: ListView(
           children: <Widget>[
             buildHeader(
@@ -176,7 +175,6 @@ class _MenuPageState extends ConsumerState<MenuPage> {
                       currentPage = 'Term and Conditions';
                     },
                   ),
-                  
                 ],
               ),
             ),
@@ -219,7 +217,12 @@ Widget buildHeader({
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         child: Row(
           children: [
-            CircleAvatar(radius: 30, backgroundImage: NetworkImage(urlImage)),
+            CircleAvatar(
+                radius: 30,
+                backgroundImage: urlImage == 'noImage'
+                    ? const AssetImage('assets/user.jpg')
+                    : NetworkImage(urlImage) as ImageProvider,
+             ),
             const SizedBox(width: 20),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,8 +241,8 @@ Widget buildHeader({
             const Spacer(),
             const CircleAvatar(
               radius: 24,
-              backgroundColor: Color.fromRGBO(30, 60, 168, 1),
-              child: Icon(Icons.note_alt_outlined, color: Colors.white),
+              backgroundColor: white,
+              backgroundImage: AssetImage('assets/icon.png'),
             )
           ],
         ),

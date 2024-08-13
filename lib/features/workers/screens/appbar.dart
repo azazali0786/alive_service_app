@@ -27,18 +27,18 @@ class _AppbarState extends State<Appbar> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           IconButton(
-              icon: SvgPicture.asset("assets/images/burger_icon.svg"),
+              icon: SvgPicture.asset("assets/burger_icon.svg"),
               onPressed: () {
                 widget.zoomDrawerController.toggle?.call();
               }),
           Container(
-            width: 40,
-            height: 40,
+            width: 50,
+            height: 50,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
                     image: AssetImage(
-                        "assets/play_store_512.png"),
+                        "assets/icon.png"),
                     fit: BoxFit.cover)),
           )
         ],

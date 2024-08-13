@@ -1,79 +1,122 @@
-const List online_data_one = [
+const List dataOne = [
   {
-    "id": "1",
     "title": "Plumber",
-    "courses": "17 Courses",
-    "img": "assets/works/plumber.png",
-    "img_detail": "assets/images/marketing_detail.png"
+    "img": "assets/works/plumber.jpg",
   },
   {
-    "id": "2",
-    "title": "Electrician",
-    "courses": "13 Courses",
-    "img": "assets/images/photography.png",
-    "img_detail": "assets/images/photography_detail.png"
+    "title": "HVAC Tech.",
+    "img": "assets/works/hvac_technician.jpeg",
+  },
+  {
+    "title": "Painter",
+    "img": "assets/works/painter.jpg",
+  },
+  {
+    "title": "Cameraman",
+    "img": "assets/works/cameraman.jpg",
+  },
+  {
+    "title": "Washerman",
+    "img": "assets/works/washerman.jpg",
+  },
+  {
+    "title": "Makeup Girl",
+    "img": "assets/works/makeup_artist.jpg",
+  },
+  {
+    "title": "Dancer",
+    "img": "assets/works/dancer.jpg",
   },
 ];
 
-const List online_data_two = [
+const List dataTwo = [
   {
-    "id": "3",
-    "title": "Fridge Mistry",
-    "courses": "25 Courses",
-    "img": "assets/images/ux.png",
-    "img_detail": "assets/images/ux_detail.png"
+    "title": "Electrician",
+    "img": "assets/works/electrician.jpg",
   },
   {
-    "id": "4",
-    "title": "AC Mistry",
-    "courses": "20 Courses",
-    "img": "assets/images/business.png",
-    "img_detail": "assets/images/business_detail.png"
+    "title": "Mechanic",
+    "img": "assets/works/mechanic.jpg",
+  },
+  {
+    "title": "Guard",
+    "img": "assets/works/guard.jpg",
+  },
+  {
+    "title": "Barber",
+    "img": "assets/works/barber.jpg",
+  },
+  {
+    "title": "Chef",
+    "img": "assets/works/chef.jpg",
   },
 ];
-const List online_data_three = [
+const List dataThree = [
   {
-    "id": "3",
-    "title": "Carpentor",
-    "courses": "25 Courses",
-    "img": "assets/works/carpenter.jpg",
-    "img_detail": "assets/images/ux_detail.png"
+    "title": "Labour",
+    "img": "assets/works/labour.jpg",
   },
   {
-    "id": "4",
-    "title": "Parler Girl",
-    "courses": "20 Courses",
-    "img": "assets/images/business.png",
-    "img_detail": "assets/images/business_detail.png"
+    "title": "Maid",
+    "img": "assets/works/maid.jpg",
+  },
+  {
+    "title": "Welder",
+    "img": "assets/works/welder.jpeg",
+  },
+  {
+    "title": "Carpentor",
+    "img": "assets/works/carpenter.jpg",
+  },
+  {
+    "title": "Waiter",
+    "img": "assets/works/waiter.jpg",
+  },
+  {
+    "title": "Driver",
+    "img": "assets/works/driver.jpg",
+  },
+  {
+    "title": "Singer",
+    "img": "assets/works/singer.jpg",
   },
 ];
 
 final List<String> workNameList = [
   'Plumber',
   'Electrician',
-  'Fridge Mistry',
-  'AC Mistry',
+  'HVAC Tech.',
+  'Labour',
+  'Maid',
+  'Painter',
+  'Welder',
+  'Mechanic',
   'Carpentor',
-  'Parler Girl'
+  'Cameraman',
+  'Guard',
+  'Waiter',
+  'Driver',
+  'Barber',
+  'Chef',
+  'Washerman',
+  'Makeup Girl',
+  'Dancer',
+  'Singer'
 ];
 
 final List adsData = [
   {
-    "title": "Plumber",
-    "img": "https://img.freepik.com/free-vector/colorful-plumbing-round-composition_1284-40766.jpg?size=626&ext=jpg&ga=GA1.1.869417839.1647071011&semt=sph",
+    "title": "Nearest workers ready to assist you at a moment's notice.",
+    "img": "assets/works/add1.jpg",
   },
   {
-    "title": "Plumber",
-    "img":"https://img.freepik.com/free-vector/colorful-electricity-elements-concept_1284-37811.jpg?size=626&ext=jpg&ga=GA1.1.869417839.1647071011&semt=sph"
+    "title": "Rate your service directly from your phone while the worker completes their task.",
+    "img":
+        "assets/works/add2.jpg"
   },
   {
-    "title": "Fridge Mistry",
-    "img":"https://img.freepik.com/free-vector/gluttony-flat-concept-with-man-hugging-fridge-with-junk-food-floor_1284-64200.jpg?size=626&ext=jpg&ga=GA1.1.869417839.1647071011&semt=ais",
+    "title": "Connect with a variety of professionals for any job.",
+    "img":
+        "assets/works/add3.jpg",
   },
-  {
-    "title": "Parler Girl",
-    "img":"https://img.freepik.com/free-photo/beautician-with-brush-applies-white-moisturizing-mask-face-young-girl-client-spa-beauty-salon_343596-4247.jpg?w=996&t=st=1703509748~exp=1703510348~hmac=d4f4c7d89511cf45044777e267b38263044128be8ab3bbeaa0847ed94f96f3ec",
-  },
-  
 ];
-
