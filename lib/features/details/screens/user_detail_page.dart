@@ -29,7 +29,6 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
   File? mainImage;
   List<XFile> imageFileList = [];
   List<double> myList = List.filled(2, 0);
-  // Position? position;
   String? workType;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
@@ -62,21 +61,27 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
     futureValueSet();
   }
 
-  void futureValueSet() async {
-    _isLoading = true;
-    mainImage = await ref
-        .read(userDetailsControllerProvider)
-        .urlToFile(widget.worker['mainImage']);
-    for (var image in widget.worker['moreImage']) {
-      File fileImage =
-          await ref.read(userDetailsControllerProvider).urlToFile(image);
-      imageFileList.add(XFile(fileImage.path));
-      imageCount = imageCount - imageFileList.length;
-    }
+void futureValueSet() async {
+  setState(() {
+    _isLoading = true; 
+  });
+  mainImage = await ref.read(userDetailsControllerProvider).urlToFile(widget.worker['mainImage']);
+  setState(() {
+    _isLoading = false; 
+  });
+  for (var image in widget.worker['moreImage']) {
     setState(() {
-      _isLoading = false;
+      _isLoading = true;
+    });
+    File fileImage = await ref.read(userDetailsControllerProvider).urlToFile(image);
+    imageFileList.add(XFile(fileImage.path));
+    imageCount = imageCount - imageFileList.length;
+    setState(() {
+      _isLoading = false; 
     });
   }
+}
+
 
   void deleteUserData(String work) {
     ref.read(userDetailsControllerProvider).deleteUserData(work);

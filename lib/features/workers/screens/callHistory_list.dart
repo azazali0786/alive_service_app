@@ -58,10 +58,10 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
             final worker = snapshot.data!.docs[index].data() as Map<String, dynamic>;
             final Timestamp timestamp = worker['timestamp'];
             final DateTime dateTime = timestamp.toDate();
-            final String formattedDate = DateFormat('d MMMM yyyy').format(dateTime);
+            final String formattedDate = DateFormat('d MMM yyyy').format(dateTime);
             final String formattedTime = DateFormat('h:mm a').format(dateTime);
             return Padding(
-              padding: const EdgeInsets.all(15),
+              padding: EdgeInsets.only(left: size.width*0.04, top: size.height*0.02),
               child: InkWell(
                 onTap: () {
                   Navigator.pushNamed(context, WorkerProfileScreen.routeName,
@@ -82,7 +82,7 @@ class HistoryPageState extends ConsumerState<CallhistoryList> {
                       width: size.width * 0.025,
                     ),
                     SizedBox(
-                      width: size.width * 0.35,
+                      width: size.width * 0.47,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
