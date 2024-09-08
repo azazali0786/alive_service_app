@@ -1,4 +1,4 @@
-package com.example.alive_service_app
+package com.azazali786.alive_service
 
 import io.flutter.embedding.android.FlutterActivity
 

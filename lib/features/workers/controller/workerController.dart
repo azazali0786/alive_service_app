@@ -26,6 +26,10 @@ class WorkerController {
     return workerRepository.submitRating(worker, rating, workerId);
   }
 
+  String getCurrUserId() {
+    return workerRepository.getCurrUserId();
+  }
+
   void setCallHistory(
     Function(String) onError,
     String mainImage,

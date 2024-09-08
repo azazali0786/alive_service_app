@@ -49,7 +49,8 @@ class UserDetailsController {
     String shopeName,
     String workType,
     List<Time> time,
-    Position position,
+    double lati,
+    double longi,
     String discription,
   ) {
     return userDetailsRepository.saveUserDetailData(
@@ -59,7 +60,8 @@ class UserDetailsController {
         shopeName: shopeName,
         workType: workType,
         time: time,
-        position: position,
+        latitude: lati,
+        longitude: longi,
         discription: discription);
   }
 }

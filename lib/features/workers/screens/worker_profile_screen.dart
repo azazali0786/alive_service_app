@@ -12,7 +12,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:smooth_star_rating_nsafe/smooth_star_rating.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class WorkerProfileScreen extends ConsumerStatefulWidget {
+class WorkerProfileScreen extends ConsumerStatefulWidget { 
   final String currentUser;
   final Map<String, List<String>> workerInf;
   static const routeName = "/Worker-Profile-Screen";
@@ -349,7 +349,7 @@ class _WorkerProfileScreenState extends ConsumerState<WorkerProfileScreen> {
                           ),
                           SizedBox(height: size.width * 0.02),
                           Text(
-                            'Timing',
+                            'Working Time',
                             style: TextStyle(
                               color: black.withOpacity(0.9),
                               fontSize: 18.0,

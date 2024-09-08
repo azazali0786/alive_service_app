@@ -65,7 +65,7 @@ const List dataThree = [
     "img": "assets/works/welder.jpeg",
   },
   {
-    "title": "Carpentor",
+    "title": "Carpenter",
     "img": "assets/works/carpenter.jpg",
   },
   {
@@ -91,7 +91,7 @@ final List<String> workNameList = [
   'Painter',
   'Welder',
   'Mechanic',
-  'Carpentor',
+  'Carpenter',
   'Cameraman',
   'Guard',
   'Waiter',

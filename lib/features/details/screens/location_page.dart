@@ -6,14 +6,18 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationPage extends ConsumerStatefulWidget {
+  final String currentUser;
+  final Map<String, dynamic> worker;
   final String postalCode;
   final GlobalKey<FormState> formKey;
-  final ValueChanged<Position> sendPostion;
+  final ValueChanged<List<double>> sendPostion;
   const LocationPage(
       {super.key,
       required this.formKey,
       required this.sendPostion,
-      required this.postalCode});
+      required this.postalCode,
+      required this.currentUser,
+      required this.worker});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _LocationPageState();
@@ -37,6 +41,9 @@ class _LocationPageState extends ConsumerState<LocationPage> {
   @override
   void initState() {
     pincodeController.text = "";
+    if (widget.currentUser == 'true') {
+      setValue();
+    }
     super.initState();
   }
 
@@ -44,6 +51,26 @@ class _LocationPageState extends ConsumerState<LocationPage> {
   void dispose() {
     pincodeController.dispose();
     super.dispose();
+  }
+
+  void setValue() async {
+    List<Placemark> placemark = await ref
+        .read(userDetailsControllerProvider)
+        .getAddressFromLatLong(
+            widget.worker['latitude'].toString(), widget.worker['logitude'].toString());
+    currentPincode = placemark[0].postalCode;
+    if (currentPincode == "" && placemark[0].locality != "") {
+      currentPincode = placemark[0].locality;
+    } else {
+      currentPincode = placemark[0].administrativeArea;
+    }
+    pincodeController.text = currentPincode!;
+    List<double> position = [
+      widget.worker['latitude'],
+      widget.worker['logitude']
+    ];
+    widget.sendPostion(position);
+    setState(() {});
   }
 
   void currentLocation() async {
@@ -54,8 +81,14 @@ class _LocationPageState extends ConsumerState<LocationPage> {
         .getAddressFromLatLong(currPosition!.latitude.toString(),
             currPosition!.longitude.toString());
     currentPincode = placemark[0].postalCode;
+    if (currentPincode == "" && placemark[0].locality != "") {
+      currentPincode = placemark[0].locality;
+    } else {
+      currentPincode = placemark[0].administrativeArea;
+    }
     pincodeController.text = currentPincode!;
-    widget.sendPostion(currPosition!);
+    List<double> position = [currPosition!.latitude, currPosition!.longitude];
+    widget.sendPostion(position);
     setState(() {
       isLoading = false;
     });
@@ -67,21 +100,23 @@ class _LocationPageState extends ConsumerState<LocationPage> {
       children: [
         Align(
             alignment: Alignment.topLeft,
-            child: isLoading==true?const CircularProgressIndicator(): ElevatedButton.icon(
-                onPressed: () {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  currentLocation();
-                },
-                icon: pincodeController.text != "" &&
-                        pincodeController.text == currentPincode
-                    ? const Icon(Icons.done)
-                    : const Icon(Icons.location_on),
-                label: pincodeController.text != "" &&
-                        pincodeController.text == currentPincode
-                    ? const Text('Location submitted')
-                    : const Text('Use current location '))),
+            child: isLoading == true
+                ? const CircularProgressIndicator()
+                : ElevatedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      currentLocation();
+                    },
+                    icon: pincodeController.text != ""
+                        //  && pincodeController.text == currentPincode
+                        ? const Icon(Icons.done)
+                        : const Icon(Icons.location_on),
+                    label: pincodeController.text != ""
+                        //  && pincodeController.text == currentPincode
+                        ? const Text('Location submitted')
+                        : const Text('Use current location '))),
         TextFormField(
           autovalidateMode: AutovalidateMode.onUserInteraction,
           controller: pincodeController,
@@ -89,8 +124,7 @@ class _LocationPageState extends ConsumerState<LocationPage> {
           keyboardType: TextInputType.number,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
-            hintText: "Enter pincode",
-            labelText: 'Pincode',
+            labelText: 'Location',
             prefixIcon: Icon(Icons.home),
           ),
           validator: (value) {

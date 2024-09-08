@@ -103,7 +103,7 @@ class UserDetailsRepository {
     return file;
   }
 
-  String getCurrUserPhoneNumber(){
+  String getCurrUserPhoneNumber() {
     final phoneNumber = auth.currentUser!.phoneNumber;
     return phoneNumber!;
   }
@@ -136,7 +136,8 @@ class UserDetailsRepository {
     required String shopeName,
     required String workType,
     required List<Time> time,
-    required Position position,
+    required double latitude,
+    required double longitude,
     required String discription,
   }) async {
     try {
@@ -167,7 +168,7 @@ class UserDetailsRepository {
           "${time[1].hour.toString().padLeft(2, '0')}:${time[1].minute.toString().padLeft(2, '0')} ${time[1].timeFormat}";
 
       GeoFirePoint myLocation = GeoFlutterFire()
-          .point(latitude: position.latitude, longitude: position.longitude);
+          .point(latitude: latitude, longitude: longitude);
 
       final userDetail = UserDetail(
           mainImage: imageUrl,
@@ -176,8 +177,8 @@ class UserDetailsRepository {
           workType: workType,
           timeIn: timeIn,
           timeOut: timeOut,
-          latitude: position.latitude,
-          logitude: position.longitude,
+          latitude: latitude,
+          logitude: longitude,
           discription: discription,
           phoneNumber: phoneNumber!,
           overallRating: 0,
@@ -196,8 +197,8 @@ class UserDetailsRepository {
           .doc(workType)
           .set({'id': workType});
     } catch (e) {
-      if(context.mounted){
-         showSnackBar(context: context, content: e.toString());
+      if (context.mounted) {
+        showSnackBar(context: context, content: e.toString());
       }
     }
   }

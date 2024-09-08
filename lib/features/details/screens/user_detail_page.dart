@@ -8,7 +8,6 @@ import 'package:alive_service_app/features/details/screens/timing_page.dart';
 import 'package:alive_service_app/features/drawer/screens/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
@@ -29,7 +28,8 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
   String postalCode = '';
   File? mainImage;
   List<XFile> imageFileList = [];
-  Position? position;
+  List<double> myList = List.filled(2, 0);
+  // Position? position;
   String? workType;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
@@ -89,11 +89,12 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
 
   void selectmoreImage() async {
     if (imageFileList.length < 5) {
-      imageFileList
-          .addAll(await pickMUltiImageFromGallery(context, 5-imageFileList.length));
+      imageFileList.addAll(
+          await pickMUltiImageFromGallery(context, 5 - imageFileList.length));
       setState(() {});
     } else {
-      showSnackBar(context: context, content: 'You can pick up to 5 images only');
+      showSnackBar(
+          context: context, content: 'You can pick up to 5 images only');
     }
   }
 
@@ -127,7 +128,8 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                             shopeNameController.text,
                             workType!,
                             timeList,
-                            position!,
+                            myList[0],
+                            myList[1],
                             descriptionController.text,
                           );
                       showSnackBar(
@@ -418,10 +420,12 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                   height: size.height * 0.03,
                 ),
                 LocationPage(
+                  currentUser: widget.currentUser,
+                  worker: widget.worker,
                   postalCode: postalCode,
                   formKey: _formKey,
                   sendPostion: (value) {
-                    position = value;
+                    myList = value;
                     setState(() {});
                   },
                 ),
@@ -439,7 +443,7 @@ class _UserDetailPageState extends ConsumerState<UserDetailPage> {
                         hintText: "Description",
                         labelText: 'Enter for Description',
                       ),
-                      maxLength: 120,
+                      maxLength: 150,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please write Description';

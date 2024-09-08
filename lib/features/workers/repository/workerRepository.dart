@@ -107,6 +107,11 @@ class WorkerRepository {
     await FlutterPhoneDirectCaller.callNumber(number);
   }
 
+  String getCurrUserId(){
+    final userId = auth.currentUser!.uid;
+    return userId;
+  }
+
   void setCallHistor({
     required Function(String) onError,
     required String mainImage,

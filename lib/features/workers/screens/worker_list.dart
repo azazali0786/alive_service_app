@@ -27,9 +27,11 @@ class WorkerList extends ConsumerStatefulWidget {
 class WorkerListState extends ConsumerState<WorkerList> {
   Position? position;
   bool sortByRating = false;
+  String? currUserId;
 
   @override
   void initState() {
+    getCurrUserId();
     getPosition();
     super.initState();
   }
@@ -41,9 +43,7 @@ class WorkerListState extends ConsumerState<WorkerList> {
         .read(workerControllerProvidere)
         .workerRepository
         .call(worker['phoneNumber']);
-    ref
-        .read(workerControllerProvidere)
-        .setCallHistory((error) {
+    ref.read(workerControllerProvidere).setCallHistory((error) {
       if (mounted) {
         showSnackBar(context: context, content: error);
       }
@@ -56,6 +56,10 @@ class WorkerListState extends ConsumerState<WorkerList> {
     setState(() {});
   }
 
+  void getCurrUserId() {
+    currUserId = ref.read(workerControllerProvidere).getCurrUserId();
+  }
+
   Future<String> getLocation(String lati, String logi) async {
     List<Placemark> placemarks = await ref
         .read(userDetailsControllerProvider)
@@ -66,7 +70,6 @@ class WorkerListState extends ConsumerState<WorkerList> {
 
       String address =
           "${firstPlacemark.subLocality}, ${firstPlacemark.locality}";
-
       return address;
     } else {
       return "No address found";
@@ -88,16 +91,16 @@ class WorkerListState extends ConsumerState<WorkerList> {
               padding: const EdgeInsets.only(right: 22),
               child: Row(
                 children: [
-                   Text(
+                  Text(
                     "Radius",
                     style: TextStyle(
-                            color: black.withOpacity(0.8),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18.0,
-                          ),
+                      color: black.withOpacity(0.8),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                    ),
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width*0.01,
+                    width: MediaQuery.of(context).size.width * 0.01,
                   ),
                   Text(
                     "${radius}km",
@@ -123,7 +126,10 @@ class WorkerListState extends ConsumerState<WorkerList> {
             },
           ),
         ],
-        title: const Text("workers",style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),),
+        title: const Text(
+          "workers",
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+        ),
       ),
       body: getBody(),
       floatingActionButton: FloatingActionButton(
@@ -132,7 +138,10 @@ class WorkerListState extends ConsumerState<WorkerList> {
           double start = 0;
           scrollController.jumpTo(start);
         },
-        child: const Icon(Icons.arrow_upward,color: white,),
+        child: const Icon(
+          Icons.arrow_upward,
+          color: white,
+        ),
       ),
     );
   }
@@ -163,8 +172,9 @@ class WorkerListState extends ConsumerState<WorkerList> {
                       });
                     },
                     activeColor: Colors.blue, // Customize active color
-                    inactiveThumbColor: Colors.grey, // Customize inactive thumb color
-                    inactiveTrackColor: Colors.grey.withOpacity(0.3), 
+                    inactiveThumbColor:
+                        Colors.grey, // Customize inactive thumb color
+                    inactiveTrackColor: Colors.grey.withOpacity(0.3),
                   ),
                 ),
               ],
@@ -235,6 +245,8 @@ class WorkerListState extends ConsumerState<WorkerList> {
                           return Text('Error: ${addressSnapshot.error}');
                         } else if (!addressSnapshot.hasData) {
                           return const Text('Address not found');
+                        } else if (snapshot.data![index].id == currUserId) {
+                          return const SizedBox();
                         } else {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 10),
@@ -274,52 +286,58 @@ class WorkerListState extends ConsumerState<WorkerList> {
                                         Text(
                                           worker['shopeName'],
                                           style: TextStyle(
-                                        color: black.withOpacity(0.8),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18.0,
-                                      ),
+                                            color: black.withOpacity(0.8),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18.0,
+                                          ),
                                         ),
                                         Text(
                                           '${widget.workType} ',
                                           style: TextStyle(
-                                        color: black.withOpacity(0.5),
-                                        fontSize: 15.0,
-                                      ),
+                                            color: black.withOpacity(0.5),
+                                            fontSize: 15.0,
+                                          ),
                                         ),
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             SmoothStarRating(
                                               allowHalfRating: false,
                                               // onRatingChanged:
-                                              //     null, 
+                                              //     null,
                                               starCount: 5,
-                                              rating:
-                                                  worker['overallRating'] ?? 0.0,
+                                              rating: worker['overallRating'] ??
+                                                  0.0,
                                               size: 20.0,
                                               filledIconData: Icons.star,
                                               halfFilledIconData:
                                                   Icons.star_half_outlined,
-                                              color: const Color.fromARGB(255, 109, 160, 255),
-                                              borderColor: const Color.fromARGB(255, 109, 160, 255),
+                                              color: const Color.fromARGB(
+                                                  255, 109, 160, 255),
+                                              borderColor: const Color.fromARGB(
+                                                  255, 109, 160, 255),
                                               spacing: 0.0,
                                             ),
                                             GestureDetector(
-                                              onTap: () {
-                                                getCall(worker, snapshot.data![index].id);
-                                              },
-                                              child: const Icon(Icons.phone))
+                                                onTap: () {
+                                                  getCall(worker,
+                                                      snapshot.data![index].id);
+                                                },
+                                                child: const Icon(Icons.phone))
                                           ],
                                         ),
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Expanded(
                                               child: RichText(
                                                 text: TextSpan(
                                                   text: addressSnapshot.data,
                                                   style: TextStyle(
-                                                    color: Colors.black.withOpacity(0.5),
+                                                    color: Colors.black
+                                                        .withOpacity(0.5),
                                                     fontSize: 15.0,
                                                     height: 1.4,
                                                     letterSpacing: 0.5,
@@ -328,16 +346,16 @@ class WorkerListState extends ConsumerState<WorkerList> {
                                               ),
                                             ),
                                             const Icon(
-                                              Icons.location_on, 
-                                              color:Color.fromARGB(255, 109, 160, 255), 
-                                              size: 20.0, 
+                                              Icons.location_on,
+                                              color: Color.fromARGB(
+                                                  255, 109, 160, 255),
+                                              size: 20.0,
                                             ),
                                           ],
                                         ),
                                       ],
                                     ),
                                   ),
-                                  
                                 ],
                               ),
                             ),
