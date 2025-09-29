@@ -20,12 +20,10 @@ A few resources to help you if you are new to Flutter:
 
 Here are some screenshots of the app:
 
-![Home Screen](assets/app/app-1.jpg)
-![Worker List](assets/app/app-2.jpg)
-![Profile View](assets/app/app-3.jpg)
-![Chat Screen](assets/app/app-4.jpg)
-![Status Update](assets/app/app-5.jpg)
-![Settings](assets/app/app-6.jpg)
+| ![Home Screen](assets/app/app-1.jpg) | ![Worker List](assets/app/app-2.jpg) | ![Profile View](assets/app/app-3.jpg) |
+|-------------------------------------|-------------------------------------|-------------------------------------|
+| ![Chat Screen](assets/app/app-4.jpg) | ![Status Update](assets/app/app-5.jpg) | ![Settings](assets/app/app-6.jpg) |
+
 
 ---
 
